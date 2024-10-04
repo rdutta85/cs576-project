@@ -1,1 +1,2 @@
-# cs576-project
+# CS 576 Project
+

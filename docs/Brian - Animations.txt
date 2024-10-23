@@ -1,0 +1,3 @@
+For our animations we plan to use keyframe animations as well as physics-based animations to give our enemies and main character realistic motions. 
+Some examples of animations that we plan to incorporate are animations for every time an instrument is being played, animations for the walking 
+motions of the playable character, walking animations for our enemies, attacking animations for our enemies, etc. 

@@ -1,6 +1,0 @@
-The game will have a roguelike structure. As in all of the player's progression will reset after they die. The player will 
-control a character that has a varying amount of moves that they can do. The main attack of the character will be determined 
-by the music note that the player does. Players will spawn in a map and travel around attacking monsters. Monsters will drop items
-that the players can use to get stronger. These items increase basic stats, such as speed, strength, etc. As time progressesd, increasingly 
-stronger monsters will start spawning. At any time, the  player can choose to move onto the next map. After three maps, the player 
-will fight a end boss with the loot they have gathered.

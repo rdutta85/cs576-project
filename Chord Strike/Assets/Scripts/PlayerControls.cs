@@ -2,21 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
-{
+public class PlayerControls : MonoBehaviour{
     private CharacterController character_controller;
     private Vector3 movement_direction;
     private float velocity;
-    public bool projectile;
+    private GameObject projectile_template;
+    private float projectile_velocity;
+    private Vector3 projectile_starting_pos;
+    private float lastShootTime = 0f;
     void Start()
     {
         character_controller = GetComponent<CharacterController>();
         movement_direction = new Vector3(0.0f, 0.0f, 0.0f);
         velocity = 5f;
+
+        projectile_template = (GameObject)Resources.Load("Bullet/Prefab/Bullet", typeof(GameObject));
+        if(projectile_template == null){
+            Debug.LogError("Error: could not find bullet prefab!");
+
+        projectile_velocity = 5.0f;
+        projectile_starting_pos = new Vector3(0.0f, 0.0f, 0.0f);
+
+        }
     }
 
     void Update()
     {
+
+        movement();
+        shoot();
+    }
+
+    private void movement(){
         float ang = Mathf.Deg2Rad * transform.rotation.eulerAngles.y;
 
         // Update Forward/Back Movement Direction
@@ -56,27 +73,46 @@ public class PlayerMovement : MonoBehaviour
             character_controller.Move(left * velocity / 1.5f * Time.deltaTime);
         }
 
-        if (Input.GetKey(KeyCode.A))
-        {
-            // Shoot some projectile
-            projectile = true;
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            // Shoot some projectile
-            projectile = true;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            // Shoot some projectile
-            projectile = true;
-        }
-
 
         if (!character_controller.isGrounded)
         {
             character_controller.Move(new Vector3 (0f, -1f, 0f) * 9.81f * Time.deltaTime);
         }
+    }
 
+    private void shoot(){
+        // if (Input.GetKey(KeyCode.A))
+        // {
+        //     // Shoot some projectile
+
+        // }
+        // else if (Input.GetKey(KeyCode.S))
+        // {
+        //     // Shoot some projectile
+
+        // }
+        // else if (Input.GetKey(KeyCode.D))
+        // {
+        //     // Shoot some projectile
+
+        // }
+
+        //this is for testing purposes
+        if(Input.GetKey("space") && Time.time - lastShootTime >= 0.5f){
+            // GameObject enemy = GameObject.Find("Enemy")
+            // RaycastHit hit;
+            // Vector3 player_centroid = GetComponent<Collider>().bounds.center;
+            // if(Physics.Raycast(player_centroid, movement_direction.Normalize(), out hit, Mathf.Infinity)){
+            //     if(hit.collider.gameObject = enemy){
+            //         projectile_starting_pos = transform.position;
+            //     }
+            // }
+            lastShootTime = Time.time;
+            projectile_starting_pos = transform.position;
+            GameObject new_object = Instantiate(projectile_template, projectile_starting_pos, Quaternion.identity);
+            new_object.GetComponent<Bullet>().direction = movement_direction; //should be direction character is facing
+            new_object.GetComponent<Bullet>().velocity = projectile_velocity;
+            new_object.GetComponent<Bullet>().birth_time = Time.time;
+        }
     }
 }

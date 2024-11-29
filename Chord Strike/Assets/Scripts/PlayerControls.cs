@@ -99,14 +99,7 @@ public class PlayerControls : MonoBehaviour{
 
         //this is for testing purposes
         if(Input.GetKey("space") && Time.time - lastShootTime >= 0.5f){
-            // GameObject enemy = GameObject.Find("Enemy")
-            // RaycastHit hit;
-            // Vector3 player_centroid = GetComponent<Collider>().bounds.center;
-            // if(Physics.Raycast(player_centroid, movement_direction.Normalize(), out hit, Mathf.Infinity)){
-            //     if(hit.collider.gameObject = enemy){
-            //         projectile_starting_pos = transform.position;
-            //     }
-            // }
+
             lastShootTime = Time.time;
             projectile_starting_pos = transform.position;
             GameObject new_object = Instantiate(projectile_template, projectile_starting_pos, Quaternion.identity);

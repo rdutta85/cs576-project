@@ -19,8 +19,11 @@ public class Bullet : MonoBehaviour{
     }
 
     private void OnTriggerEnter(Collider other){
-        if(other.gameObject.CompareTag("Enemy")){
+        GameObject hit = other.gameObject;
+        if(hit.CompareTag("Enemy")){
+            Enemy hit_enemy = hit.GetComponent<Enemy>();
             Destroy(gameObject);
+            hit_enemy.damage(50f);
         }else{
             // Destroy(gameObject);
         }

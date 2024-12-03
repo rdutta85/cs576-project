@@ -35,7 +35,7 @@ public class Enemy : MonoBehaviour
 
     public string note;
     private JunkochanControl junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
-    private attackRange = 5.0f;
+    private float attackRange = 5.0f;
     private float rndMoveVelocity = 0.5f;
     private float tgtMovevelocity = 1.0f;
     private float currVelocity;
@@ -46,9 +46,6 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         currVelocity = 0.0f;
-        // Delete this.
-        note = "A";
-
     }
 
     // Update is called once per frame
@@ -95,7 +92,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void GetMapHeightAtPos(float x, float z)
+    float GetMapHeightAtPos(float x, float z)
     {
         return 0.0f; // TODO: update
     }

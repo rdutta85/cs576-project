@@ -26,7 +26,7 @@ public class EnemySpawner : MonoBehaviour
         return new Vector3(spawnX, spawnHeight, spawnZ);
     }
 
-    private Vector3 EnemyOrientation(Vector3 spawnPos)
+    private Quaternion EnemyOrientation(Vector3 spawnPos)
     {
         Vector3 lookAtPos = junko.transform.position;
         lookAtPos.y = 0.0f;
@@ -38,7 +38,7 @@ public class EnemySpawner : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             Vector3 spawnPos = RandomEnemyPos();
-            Vector3 spawnRot = EnemyOrientation(spawnPos);
+            Quaternion spawnRot = EnemyOrientation(spawnPos);
 
             GameObject enemy = Instantiate(enemyPrefab, spawnPos, spawnRot);
             enemy.name = enemyTag;

@@ -34,10 +34,10 @@ public class Enemy : MonoBehaviour
      */
 
     public string note;
-    private JunkochanControl junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
+    private JunkochanControl junko;
     private float attackRange = 5.0f;
     private float rndMoveVelocity = 0.5f;
-    private float tgtMovevelocity = 1.0f;
+    private float tgtMoveVelocity = 1.0f;
     private float currVelocity;
 
     // TODO: get map data from level
@@ -46,6 +46,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         currVelocity = 0.0f;
+        junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
     }
 
     // Update is called once per frame
@@ -63,7 +64,8 @@ public class Enemy : MonoBehaviour
             if (hit.collider.gameObject == junko.gameObject)
             {
                 // player is in line of sight move towards player
-                MoveSmoothly(junko.transform.position, tgtMovevelocity);
+                Debug.Log("Player in line of sight");
+                MoveSmoothly(junko.transform.position, tgtMoveVelocity);
 
                 // if player is within range, attack player
                 if (Vector3.Distance(transform.position, junko.transform.position) < attackRange)
@@ -78,6 +80,7 @@ public class Enemy : MonoBehaviour
                 float rndZ = Random.Range(-20.0f, 20.0f);
                 float rndY = GetMapHeightAtPos(rndX, rndZ);
 
+                Debug.Log("Player is NOT in line of sight");
                 MoveSmoothly(new Vector3(rndX, rndY, rndZ), rndMoveVelocity);
             }
         }
@@ -88,6 +91,7 @@ public class Enemy : MonoBehaviour
             float rndZ = Random.Range(-20.0f, 20.0f);
             float rndY = GetMapHeightAtPos(rndX, rndZ);
 
+            Debug.Log("Player is NOT in line of sight");
             MoveSmoothly(new Vector3(rndX, rndY, rndZ), rndMoveVelocity);
         }
     }
@@ -100,8 +104,8 @@ public class Enemy : MonoBehaviour
     void MoveSmoothly(Vector3 target_pos, float target_velocity)
     {
         // rotate towards target
-        Vector3 direction = target_pos - transform.position;
-        transform.rotation = Quaternion.LookRotation(direction);
+        // Vector3 direction = target_pos - transform.position;
+        // transform.rotation = Quaternion.LookRotation(direction);
 
         // move towards target smoothly from current to velocity
         currVelocity = Mathf.Lerp(currVelocity, target_velocity, 0.1f);

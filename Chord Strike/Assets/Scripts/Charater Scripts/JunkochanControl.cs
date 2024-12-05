@@ -22,6 +22,7 @@ public class JunkochanControl : MonoBehaviour {
 	public ParticleSystem ParticleSystem;
 	public float Health = 3;
 	public float VertSpeed = 0;
+	private Vector3 LastMoveDirection;
 
     // Use this for initialization
     void Start () {
@@ -87,6 +88,8 @@ public class JunkochanControl : MonoBehaviour {
 		JKCController.Move(MoveDirection*MoveSpeed*Time.deltaTime);//Horizontal movement
 		JKCController.Move(Vector3.up*VertSpeed*Time.deltaTime);//Vertical movement
 
+		LastMoveDirection = MoveDirection;
+
 #endregion
 	}
 
@@ -102,6 +105,10 @@ public class JunkochanControl : MonoBehaviour {
         Invoke(nameof(SetGuardFalse), 0.1f);
         Invoke(nameof(StopParticles), 0.5f);
     }
+
+	public Vector3 GetLastMoveDirection(){
+		return LastMoveDirection;
+	}
 
 	void SetGuardFalse()
 	{

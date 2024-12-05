@@ -39,6 +39,7 @@ public class Enemy : MonoBehaviour
     private float rndMoveVelocity = 0.5f;
     private float tgtMoveVelocity = 1.0f;
     private float currVelocity;
+    private float health = 100.0f;
 
     // TODO: get map data from level
 
@@ -126,5 +127,11 @@ public class Enemy : MonoBehaviour
     public void Damage()
     {
         junko.Damage();
+    }
+    public void TakeDamage(float dmg){
+        health -= dmg;
+        if(health <= 0f){
+            Destroy(gameObject);
+        }
     }
 }

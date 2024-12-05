@@ -142,6 +142,21 @@ public class Guitar : MonoBehaviour
 
         // Play the corresponding audio
         PlayNoteAudio();
+
+        Shoot();
+    }
+    //spawn projectile
+    private void Shoot(){
+        //spawn bullets
+        GameObject projectile_template = (GameObject)Resources.Load("Bullet/Prefab/Bullet", typeof(GameObject));
+        Vector3 projectile_starting_pos = junko.transform.position;
+        projectile_starting_pos = new Vector3(projectile_starting_pos.x, 0.5f, projectile_starting_pos.z);
+        float projectile_velocity = 10.0f;
+
+        GameObject bullet = Instantiate(projectile_template, projectile_starting_pos, Quaternion.identity);
+        bullet.GetComponent<Bullet>().direction = junko.GetLastMoveDirection();
+        bullet.GetComponent<Bullet>().velocity = projectile_velocity;
+        bullet.GetComponent<Bullet>().birth_time = Time.time;
     }
 
     // Toggles the flat modifier

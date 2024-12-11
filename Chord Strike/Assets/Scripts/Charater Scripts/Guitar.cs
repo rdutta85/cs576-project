@@ -117,6 +117,7 @@ public class Guitar : MonoBehaviour
     private bool isSharp = false;      // Tracks if the sharp modifier is active
     private bool isMinor = false;      // Tracks if the minor modifier is active
 
+    private string chord; //last played chord
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
@@ -142,21 +143,20 @@ public class Guitar : MonoBehaviour
 
         // Play the corresponding audio
         PlayNoteAudio();
-
-        Shoot();
+        CheckForNearbyEnemies();
     }
-    //spawn projectile
-    private void Shoot(){
-        //spawn bullets
-        GameObject projectile_template = (GameObject)Resources.Load("Bullet/Prefab/Bullet", typeof(GameObject));
-        Vector3 projectile_starting_pos = junko.transform.position;
-        projectile_starting_pos = new Vector3(projectile_starting_pos.x, 0.5f, projectile_starting_pos.z);
-        float projectile_velocity = 10.0f;
+    //
+    void CheckForNearbyEnemies(){
+        // Get all colliders within a sphere centered on the player's position
+        Collider[] hitColliders = Physics.OverlapSphere(junko.transform.position, junko.AttackRange);
 
-        GameObject bullet = Instantiate(projectile_template, projectile_starting_pos, Quaternion.identity);
-        bullet.GetComponent<Bullet>().direction = junko.GetLastMoveDirection();
-        bullet.GetComponent<Bullet>().velocity = projectile_velocity;
-        bullet.GetComponent<Bullet>().birth_time = Time.time;
+        foreach (var hitCollider in hitColliders){
+            // Check if the collider is an enemy
+            if (hitCollider.gameObject.CompareTag("Enemy")){
+                Enemy hitObject = hitCollider.gameObject.GetComponent<Enemy>();
+                hitObject.Attacked(chord, Random.Range(junko.AttackDamage[0],junko.AttackDamage[1]));
+            }
+        }
     }
 
     // Toggles the flat modifier
@@ -216,24 +216,31 @@ public class Guitar : MonoBehaviour
                     switch (index)
                     {
                         case 0: // A#m = Bfm
+                            chord = "bfm";
                             clipToPlay = bfm;
                             break;
                         case 1: // B#m = Cm
+                            chord = "cm";
                             clipToPlay = cm;
                             break;
                         case 2: // C#m
+                            chord = "csm";
                             clipToPlay = csm;
                             break;
                         case 3: // D#m = Efm
+                            chord = "efm";
                             clipToPlay = efm;
                             break;
                         case 4: // E#m = Fm
+                            chord = "fm";
                             clipToPlay = fm;
                             break;
                         case 5: // F#m
+                            chord = "fsm";
                             clipToPlay = fsm;
                             break;
                         case 6: // G#m = Afm
+                            chord = "afm";
                             clipToPlay = afm;
                             break;
                     }
@@ -243,24 +250,31 @@ public class Guitar : MonoBehaviour
                     switch (index)
                     {
                         case 0: // A# = Bf
+                            chord = "bf";
                             clipToPlay = bf;
                             break;
                         case 1: // B# = C
+                            chord = "c";
                             clipToPlay = c;
                             break;
                         case 2: // C#
+                            chord = "cs";
                             clipToPlay = cs;
                             break;
                         case 3: // D# = Ef
+                            chord = "ef";
                             clipToPlay = ef;
                             break;
                         case 4: // E# = F
+                            chord = "f";
                             clipToPlay = f;
                             break;
                         case 5: // F#
+                            chord = "fs";
                             clipToPlay = fs;
                             break;
                         case 6: // G# = Af
+                            chord = "af";
                             clipToPlay = af;
                             break;
                     }
@@ -273,24 +287,31 @@ public class Guitar : MonoBehaviour
                     switch (index)
                     {
                         case 0: // Afm
+                            chord = "afm";
                             clipToPlay = afm;
                             break;
                         case 1: // Bfm
+                            chord = "bfm";
                             clipToPlay = bfm;
                             break;
                         case 2: // Cfm = Bm
+                            chord = "bm";
                             clipToPlay = bm;
                             break;
                         case 3: // Dfm = Csm
+                            chord = "csm";
                             clipToPlay = csm;
                             break;
                         case 4: // Efm
+                            chord = "efm";
                             clipToPlay = efm;
                             break;
                         case 5: // Ffm = Em
+                            chord = "em";
                             clipToPlay = em;
                             break;
                         case 6: // Gfm = Fsm
+                            chord = "fsm";
                             clipToPlay = fsm;
                             break;
                     }
@@ -300,24 +321,31 @@ public class Guitar : MonoBehaviour
                     switch (index)
                     {
                         case 0: // Af
+                            chord = "af";
                             clipToPlay = af;
                             break;
                         case 1: // Bf
+                            chord = "bf";
                             clipToPlay = bf;
                             break;
                         case 2: // Cf = B
+                            chord = "b";
                             clipToPlay = b;
                             break;
                         case 3: // Df = Cs
+                            chord = "cs";
                             clipToPlay = cs;
                             break;
                         case 4: // Ef
+                            chord = "ef";
                             clipToPlay = ef;
                             break;
                         case 5: // Ff = E
+                            chord = "e";
                             clipToPlay = e;
                             break;
                         case 6: // Gf = Fs
+                            chord = "fs";
                             clipToPlay = fs;
                             break;
                     }
@@ -329,24 +357,31 @@ public class Guitar : MonoBehaviour
                     switch (index)
                     {
                         case 0: // Am
+                            chord = "am";
                             clipToPlay = am;
                             break;
                         case 1: // Bm
+                            chord = "bm";
                             clipToPlay = bm;
                             break;
                         case 2: // Cm
+                            chord = "cm";
                             clipToPlay = cm;
                             break;
                         case 3: // Dm
+                            chord = "dm";
                             clipToPlay = dm;
                             break;
                         case 4: // Em
+                            chord = "em";
                             clipToPlay = em;
                             break;
                         case 5: // Fm
+                            chord = "fm";
                             clipToPlay = fm;
                             break;
                         case 6: // Gm
+                            chord = "gm";
                             clipToPlay = gm;
                             break;
                     }
@@ -356,24 +391,31 @@ public class Guitar : MonoBehaviour
                     switch (index)
                     {
                         case 0: // A
+                            chord = "a";
                             clipToPlay = a;
                             break;
                         case 1: // B
+                            chord = "b";
                             clipToPlay = b;
                             break;
                         case 2: // C
+                            chord = "c";
                             clipToPlay = c;
                             break;
                         case 3: // D
+                            chord = "d";
                             clipToPlay = d;
                             break;
                         case 4: // E
+                            chord = "e";
                             clipToPlay = e;
                             break;
                         case 5: // F
+                            chord = "f";
                             clipToPlay = f;
                             break;
                         case 6: // G
+                            chord = "g";
                             clipToPlay = g;
                             break;
                     }

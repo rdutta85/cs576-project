@@ -29,8 +29,8 @@ public class PlayerControls : MonoBehaviour{
     void Update()
     {
 
-        movement();
-        shoot();
+        // movement();
+        // shoot();
     }
 
     private void movement(){
@@ -98,14 +98,14 @@ public class PlayerControls : MonoBehaviour{
         // }
 
         //this is for testing purposes
-        if(Input.GetKey("space") && Time.time - lastShootTime >= 0.5f){
+        // if(Input.GetKey("space") && Time.time - lastShootTime >= 0.5f){
 
-            lastShootTime = Time.time;
-            projectile_starting_pos = transform.position;
-            GameObject new_object = Instantiate(projectile_template, projectile_starting_pos, Quaternion.identity);
-            new_object.GetComponent<Bullet>().direction = movement_direction; //should be direction character is facing
-            new_object.GetComponent<Bullet>().velocity = projectile_velocity;
-            new_object.GetComponent<Bullet>().birth_time = Time.time;
-        }
+        //     lastShootTime = Time.time;
+        //     projectile_starting_pos = transform.position;
+        //     GameObject new_object = Instantiate(projectile_template, projectile_starting_pos, Quaternion.identity);
+        //     new_object.GetComponent<Bullet>().direction = movement_direction; //should be direction character is facing
+        //     new_object.GetComponent<Bullet>().velocity = projectile_velocity;
+        //     new_object.GetComponent<Bullet>().birth_time = Time.time;
+        // }
     }
 }

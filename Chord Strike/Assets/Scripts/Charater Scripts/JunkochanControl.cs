@@ -17,12 +17,15 @@ public class JunkochanControl : MonoBehaviour {
 	private GameObject JKCCam;//Camera which chases Junkochan
 	private CharacterController JKCController;//Character controller component attached to Junkochan
 	private Animator JKCAnim;//Animator component attached to Junkochan
-	private float MoveSpeed;//Horizontal move speed
+	private float MoveSpeed = 3f;//Horizontal move speed
+	private float move_velocity = 0;
+	private Vector3 MoveDirection;
 	private float Height;//Current height of Junkochan (y value of transform.position)
 	public ParticleSystem ParticleSystem;
-	public float Health = 3;
+	public float Health = 100;
 	public float VertSpeed = 0;
-	private Vector3 LastMoveDirection;
+	public float AttackRange = 1.5f;
+	public float[] AttackDamage = {25f,33f};
 
     // Use this for initialization
     void Start () {
@@ -52,24 +55,24 @@ public class JunkochanControl : MonoBehaviour {
 
 
 #region MOVEMENT
+		move_velocity = MoveSpeed;
 		InputH = Input.GetAxis("Horizontal");//Get keyboard input
 		InputV = Input.GetAxis("Vertical");//Get keyboard input
 		Vector3 CamForward = Vector3.Scale(JKCCam.transform.forward, new Vector3(1, 0, 1)).normalized;//Camera's forward direction
-		Vector3 MoveDirection = CamForward * InputV + JKCCam.transform.right * InputH;//Get Junkochan's forward direction seen from camera
+		MoveDirection = CamForward * InputV + JKCCam.transform.right * InputH;//Get Junkochan's forward direction seen from camera
 
 		if (MoveDirection.magnitude > 0) {//When any WASD key is pushed
 			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(MoveDirection), 0.05f);//Rotate Junkochan to Inputting direction
 		}
 
 		if (MoveDirection.magnitude > 0) {//When any WASD key is pushed
-			MoveSpeed = 2f;//Set Junkochan's moving speed as walking speed
 			JKCAnim.SetBool("Move", true);//Set Junkochan's "Move" parameter in Animator component
 		} else {
 			JKCAnim.SetBool("Move", false);
 		}
 
 		if (Input.GetKey(KeyCode.LeftShift)) {//When shift key is pushed
-			MoveSpeed *= 2f;//Set Junkochan's moving speed as Running speed
+			move_velocity *= 2f;//Set Junkochan's moving speed as Running speed
 			JKCAnim.SetBool("Run", true);//Set Junkochan's "Run" parameter in Animator component
 		} else {
 			JKCAnim.SetBool("Run", false);
@@ -85,10 +88,8 @@ public class JunkochanControl : MonoBehaviour {
 
 		//JunckoChan Movement
 		if(!CheckGrounded())VertSpeed -= 0.2f;//Increase falling speed (worked as gravity acceleration)
-		JKCController.Move(MoveDirection*MoveSpeed*Time.deltaTime);//Horizontal movement
+		JKCController.Move(MoveDirection*move_velocity*Time.deltaTime);//Horizontal movement
 		JKCController.Move(Vector3.up*VertSpeed*Time.deltaTime);//Vertical movement
-
-		LastMoveDirection = MoveDirection;
 
 #endregion
 	}
@@ -106,9 +107,6 @@ public class JunkochanControl : MonoBehaviour {
         Invoke(nameof(StopParticles), 0.5f);
     }
 
-	public Vector3 GetLastMoveDirection(){
-		return LastMoveDirection;
-	}
 
 	void SetGuardFalse()
 	{
@@ -120,9 +118,16 @@ public class JunkochanControl : MonoBehaviour {
 		ParticleSystem.Stop();
 	}
 
-	public void Damage()
+	public void TakeDamage(float dmg)
 	{
-		Health -= 1;
+		Health -= dmg;
         JKCAnim.SetBool("IsDamaged", true);
     }
+
+	public float GetVelocity(){
+		return move_velocity;
+	}
+	public Vector3 GetMoveDirection(){
+		return MoveDirection;
+	}
 }

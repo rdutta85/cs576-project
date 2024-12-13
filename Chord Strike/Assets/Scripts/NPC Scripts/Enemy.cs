@@ -10,6 +10,7 @@ enum Chord
     Cs, Fs, Csm, Fsm
 };
 
+
 // These are all possible note names. 
 enum Note
 {
@@ -17,6 +18,8 @@ enum Note
     Af, Bf, Cf, Df, Ef, Ff, Gf,
     As, Bs, Cs, Ds, Es, Fs, Gs
 }
+
+
 
 public class Enemy : MonoBehaviour
 {
@@ -50,15 +53,48 @@ public class Enemy : MonoBehaviour
     private HealthBar healthBar;
     protected bool isDead;
 
+    // Dictionary mapping chords to notes
+    private Dictionary<Chord, List<Note>> chordToNotes = new Dictionary<Chord, List<Note>>
+    {
+        { Chord.A, new List<Note> { Note.A, Note.Cs, Note.E } },
+        { Chord.Am, new List<Note> { Note.A, Note.C, Note.E } },
+        { Chord.B, new List<Note> { Note.B, Note.Ds, Note.Fs } },
+        { Chord.Bm, new List<Note> { Note.B, Note.D, Note.Fs } },
+        { Chord.C, new List<Note> { Note.C, Note.E, Note.G } },
+        { Chord.Cm, new List<Note> { Note.C, Note.Ef, Note.G } },
+        { Chord.D, new List<Note> { Note.D, Note.Fs, Note.A } },
+        { Chord.Dm, new List<Note> { Note.D, Note.F, Note.A } },
+        { Chord.E, new List<Note> { Note.E, Note.Gs, Note.B } },
+        { Chord.Em, new List<Note> { Note.E, Note.G, Note.B } },
+        { Chord.F, new List<Note> { Note.F, Note.A, Note.C } },
+        { Chord.Fm, new List<Note> { Note.F, Note.Af, Note.C } },
+        { Chord.G, new List<Note> { Note.G, Note.B, Note.D } },
+        { Chord.Gm, new List<Note> { Note.G, Note.Bf, Note.D } },
+        { Chord.Cs, new List<Note> { Note.Cs, Note.E, Note.Gs } },
+        { Chord.Csm, new List<Note> { Note.Cs, Note.E, Note.G } },
+        { Chord.Af, new List<Note> { Note.Af, Note.C, Note.Ef } },
+        { Chord.Afm, new List<Note> { Note.Af, Note.B, Note.Ef } },
+        { Chord.Bf, new List<Note> { Note.Bf, Note.D, Note.F } },
+        { Chord.Bfm, new List<Note> { Note.Bf, Note.D, Note.Fs } },
+        { Chord.Ef, new List<Note> { Note.Ef, Note.G, Note.Bf } },
+        { Chord.Efm, new List<Note> { Note.Ef, Note.G, Note.B } },
+        { Chord.Fs, new List<Note> { Note.Fs, Note.A, Note.Cs } },
+        { Chord.Fsm, new List<Note> { Note.Fs, Note.A, Note.C } },
+    };
+
     // TODO: get map data from level
 
-    void Awake(){
+    void Awake()
+    {
         healthBar = GetComponentInChildren<HealthBar>();
     }
 
     // Start is called before the first frame update
     void Start()
-    {   
+    {
+        //assign a random chord to the enemy
+        chord = GenerateChord();
+
         isDead = false;
         currVelocity = 0.0f;
         last_attack = 0f;
@@ -67,13 +103,13 @@ public class Enemy : MonoBehaviour
 
     // Update is called once per frame
     protected void Update()
-    {   
-        if(isDead) return;
+    {
+        if (isDead) return;
         float verticalVelocity = 0f;
         if (character_controller.isGrounded)
-            verticalVelocity = -0.1f; 
+            verticalVelocity = -0.1f;
         else
-            verticalVelocity -= 9.81f * Time.deltaTime; 
+            verticalVelocity -= 9.81f * Time.deltaTime;
         Vector3 moveDirection = new Vector3(0, verticalVelocity, 0);
         character_controller.Move(moveDirection * Time.deltaTime);
 
@@ -88,9 +124,11 @@ public class Enemy : MonoBehaviour
         Vector3 move_direction;
         float move_velocity;
         float dist = Vector3.Distance(transform.position, junko.transform.position);
-        if(dist > attackRange/2f){//stay meters away from player
-            if (Physics.Raycast(transform.position, junko.transform.position - transform.position, out hit, Mathf.Infinity)){
-            if (hit.collider.gameObject == junko.gameObject)//sprint if player is in l.o.s
+        if (dist > attackRange / 2f)
+        {//stay meters away from player
+            if (Physics.Raycast(transform.position, junko.transform.position - transform.position, out hit, Mathf.Infinity))
+            {
+                if (hit.collider.gameObject == junko.gameObject)//sprint if player is in l.o.s
                 {
                     Debug.Log("Player in line of sight");
                     animation_controller.SetBool("isWalking", false);
@@ -105,14 +143,17 @@ public class Enemy : MonoBehaviour
                     move_velocity = rndMoveVelocity;
                 }
             }
-            else{
-            // Debug.Log("Player is NOT in line of sight");
-            animation_controller.SetBool("isWalking", true);
-            animation_controller.SetBool("isRunning", false);
-            move_velocity = rndMoveVelocity;
+            else
+            {
+                // Debug.Log("Player is NOT in line of sight");
+                animation_controller.SetBool("isWalking", true);
+                animation_controller.SetBool("isRunning", false);
+                move_velocity = rndMoveVelocity;
             }
             //rotate model towards move direction
-        }else{
+        }
+        else
+        {
             move_velocity = 0f;
             animation_controller.SetBool("isWalking", false);
             animation_controller.SetBool("isRunning", false);
@@ -126,17 +167,20 @@ public class Enemy : MonoBehaviour
 
         character_controller.Move(move_direction * move_velocity * Time.deltaTime);
     }
-    protected virtual void Attack(){
+    protected virtual void Attack()
+    {
         // if player is within range, attack player
-        if (Vector3.Distance(transform.position, junko.transform.position) < attackRange && health > 0 && Time.time - last_attack >= attackSpeed){
+        if (Vector3.Distance(transform.position, junko.transform.position) < attackRange && health > 0 && Time.time - last_attack >= attackSpeed)
+        {
             animation_controller.SetBool("isWalking", false);
             animation_controller.SetBool("isRunning", false);
             animation_controller.SetTrigger("Attack");
-            junko.TakeDamage(Random.Range(AttackDamage[0],AttackDamage[1]));
+            junko.TakeDamage(Random.Range(AttackDamage[0], AttackDamage[1]));
             last_attack = Time.time;
         }
     }
-    public float[] GetAttackDmg(){
+    public float[] GetAttackDmg()
+    {
         return AttackDamage;
     }
     float GetMapHeightAtPos(float x, float z)
@@ -167,39 +211,55 @@ public class Enemy : MonoBehaviour
         return null;
     }
 
-    private void TakeDamage(float dmg){
+    private void TakeDamage(float dmg)
+    {
         health -= dmg;
-        healthBar.UpdateHealthBar(health,maxHealth);
-        if(health <= 0f){
-            StartCoroutine("Death");  
+        healthBar.UpdateHealthBar(health, maxHealth);
+        if (health <= 0f)
+        {
+            StartCoroutine("Death");
         }
     }
 
-    public void Attacked(string player_chord, float dmg){
-        if (true){//use ChordsToNotes to determine if the player chord matches
-            if(health > 0) TakeDamage(dmg);
-            chord = GenerateChord();//change the note of the enemy after being attacked
-        }else{
+    public void Attacked(string player_chord, float dmg)
+    {
+        //use ChordsToNotes to determine if the player chord matches
+        //the enemy chord
+        if (chordToNotes[(Chord)System.Enum.Parse(typeof(Chord), chord)].Contains((Note)System.Enum.Parse(typeof(Note), player_chord)))
+        {
+            if (health > 0) TakeDamage(dmg);
+            chord = GenerateChord();  //change the note of the enemy after being attacked
+        }
+        else
+        {
             MistakeCounter++;
-            if(MistakeCounter == 3){//if the player plays the wrong chord 3 times, the enemy is enraged
+            if (MistakeCounter == 3)
+            {//if the player plays the wrong chord 3 times, the enemy is enraged
                 StartCoroutine("Enraged");
                 MistakeCounter = 0;
             }
         }
     }
 
-    protected string GenerateChord(){//TODO randomly generate chord
-        return "";
+    protected string GenerateChord()
+    {
+        //randomly generate chord
+        System.Array values = System.Enum.GetValues(typeof(Chord));
+        Chord randomChord = (Chord)values.GetValue(Random.Range(0, values.Length));
+        return randomChord.ToString();
+
     }
 
     //enrages enemies deal 2x damage for 30s
-    private IEnumerator Enraged(){
-        AttackDamage = new float[] {AttackDamage[0]*2f, AttackDamage[1]*2f};
+    private IEnumerator Enraged()
+    {
+        AttackDamage = new float[] { AttackDamage[0] * 2f, AttackDamage[1] * 2f };
         yield return new WaitForSeconds(30f);
-        AttackDamage = new float[] {AttackDamage[0]/2f, AttackDamage[1]/2f};
-    } 
+        AttackDamage = new float[] { AttackDamage[0] / 2f, AttackDamage[1] / 2f };
+    }
     //play death animation
-    protected virtual IEnumerator Death(){
+    protected virtual IEnumerator Death()
+    {
         isDead = true;
         animation_controller.SetTrigger("Death");
         yield return new WaitForSeconds(animation_controller.GetCurrentAnimatorStateInfo(0).length + 1f);

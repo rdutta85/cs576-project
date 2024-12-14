@@ -61,16 +61,9 @@ public class EnemySpawner : MonoBehaviour
             Vector3 spawnPos = RandomEnemyPos();
             Quaternion spawnRot = EnemyOrientation(spawnPos);
 
-            // GameObject enemy = CreateDummyEnemy(spawnPos, spawnRot);
-            GameObject enemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+            GameObject enemy = Instantiate(enemyPrefab, spawnPos, spawnRot);
             enemy.name = enemyTag;
             enemy.gameObject.tag = enemyTag;
-
-            // enemy.GetComponent<Rigidbody>().mass = 100.0f;
-
-            // enemy.AddComponent<BoxCollider>();
-            // enemy.GetComponent<BoxCollider>().isTrigger = true;
-            // enemy.GetComponent<BoxCollider>().size = new Vector3(3.0f, 3.0f, 3.0f);
 
         }
     }

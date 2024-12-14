@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /*
  
@@ -27,6 +28,7 @@ public class JunkochanControl : MonoBehaviour
 	public float VertSpeed = 0;
 	public float AttackRange = 1.5f;
 	public float[] AttackDamage = { 25f, 33f };
+	private string CurrentScene;
 
 	// Use this for initialization
 	void Start()
@@ -37,6 +39,8 @@ public class JunkochanControl : MonoBehaviour
 		JKCAnim.SetBool("Jump", false);
 		JKCAnim.SetBool("Grounded", true);
 		JKCAnim.SetBool("Fall", false);
+
+		CurrentScene = SceneManager.GetActiveScene().name;
 	}
 
 	// Update is called once per frame
@@ -73,7 +77,7 @@ public class JunkochanControl : MonoBehaviour
 
 		if (MoveDirection.magnitude > 0)
 		{//When any WASD key is pushed
-			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(MoveDirection), 0.05f);//Rotate Junkochan to Inputting direction
+			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(MoveDirection), 0.01f);//Rotate Junkochan to Inputting direction
 		}
 
 		if (MoveDirection.magnitude > 0)
@@ -107,7 +111,7 @@ public class JunkochanControl : MonoBehaviour
 		Height = transform.position.y;//Memory current Junkochan's height
 
 		//JunckoChan Movement
-		if (!CheckGrounded()) VertSpeed -= 0.2f;//Increase falling speed (worked as gravity acceleration)
+		// if (!CheckGrounded()) VertSpeed -= 0.2f;//Increase falling speed (worked as gravity acceleration)
 		JKCController.Move(MoveDirection * move_velocity * Time.deltaTime);//Horizontal movement
 		JKCController.Move(Vector3.up * VertSpeed * Time.deltaTime);//Vertical movement
 

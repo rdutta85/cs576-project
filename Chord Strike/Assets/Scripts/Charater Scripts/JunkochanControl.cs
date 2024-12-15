@@ -103,7 +103,7 @@ public class JunkochanControl : MonoBehaviour
 		else if (Input.GetKey(KeyCode.S))
 		{
 			JKCAnim.SetBool("Move", true);
-			JKCAnim.SetBool("Grounded", true);
+			JKCAnim.SetBool("Walk", true);
 			if (Input.GetKey(KeyCode.LeftShift))
 			{
 				if (t < 2f)
@@ -134,13 +134,15 @@ public class JunkochanControl : MonoBehaviour
 		Can be used with forwards */
 		if (Input.GetKey(KeyCode.A))
 		{
+			JKCAnim.SetBool("Move", true);
 			transform.Rotate(0f, -100f * Time.deltaTime, 0f);
 		}
 
 		/* Change Direction towards right direction
 		Can be used with forwards */
-		if (Input.GetKey(KeyCode.D))
+		else if (Input.GetKey(KeyCode.D))
 		{
+			JKCAnim.SetBool("Move", true);
 			transform.Rotate(0f, 100f * Time.deltaTime, 0f);
 		}
 

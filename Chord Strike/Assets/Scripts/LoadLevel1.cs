@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class LoadLevel : MonoBehaviour
 {
-    string mainMenuScene = "SampleScene";
+    string mainMenuScene = "MainMenu";
     void Start()
     {
         // Unload all scenes except the SampleScene

@@ -13,7 +13,7 @@ public class GameOver1 : MonoBehaviour
 
     public Button retryButton; // Reference to the Retry button
     public Button mainMenuButton; // Reference to the Main Menu button
-     
+
 
     void Start()
     {
@@ -62,6 +62,6 @@ public class GameOver1 : MonoBehaviour
     public void GoToMainMenu()
     {
         Time.timeScale = 1f; // Resume the game
-        SceneManager.LoadScene("SampleScene"); // Load the main menu scene
+        SceneManager.LoadScene("MainMenu"); // Load the main menu scene
     }
 }

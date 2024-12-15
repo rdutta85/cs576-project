@@ -12,12 +12,12 @@ public class Raptor : Enemy
         character_controller = GetComponent<CharacterController>();
         attackRange = 1.1f;
         attackSpeed = 1f;
-        tgtMoveVelocity = 2.5f;
-        rndMoveVelocity = 1;
+        tgtMoveVelocity = 1.0f;
+        rndMoveVelocity = 0.5f;
         currVelocity = 0.0f;
         maxHealth = 100f;
         health = maxHealth;
-        AttackDamage = new float[]{10f,15f};
+        AttackDamage = new float[] { 10f, 15f };
         chord = GenerateChord();
     }
 

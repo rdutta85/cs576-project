@@ -64,13 +64,13 @@ public class GameOver2 : MonoBehaviour
     public void loadlevel1()
     {
         Time.timeScale = 1f; // Resume the game
-        SceneManager.LoadScene("Level1"); 
+        SceneManager.LoadScene("Level1");
     }
 
     public void GoToMainMenu()
     {
         Time.timeScale = 1f; // Resume the game
-        SceneManager.LoadScene("SampleScene"); // Load the main menu scene
+        SceneManager.LoadScene("MainMenu"); // Load the main menu scene
     }
 }
 

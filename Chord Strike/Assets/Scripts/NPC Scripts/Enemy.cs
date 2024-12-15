@@ -105,13 +105,13 @@ public class Enemy : MonoBehaviour
     protected void Update()
     {
         if (isDead) return;
-        float verticalVelocity = 0f;
-        if (character_controller.isGrounded)
-            verticalVelocity = -0.1f;
-        else
-            verticalVelocity -= 9.81f * Time.deltaTime;
-        Vector3 moveDirection = new Vector3(0, verticalVelocity, 0);
-        character_controller.Move(moveDirection * Time.deltaTime);
+        // float verticalVelocity = 0f;
+        // if (character_controller.isGrounded)
+        //     verticalVelocity = -0.1f;
+        // else
+        //     verticalVelocity -= 9.81f * Time.deltaTime;
+        // Vector3 moveDirection = new Vector3(0, verticalVelocity, 0);
+        // character_controller.Move(moveDirection * Time.deltaTime);
 
         Move();
         Attack();
@@ -192,11 +192,11 @@ public class Enemy : MonoBehaviour
     void MoveSmoothly(Vector3 target_pos, float target_velocity)
     {
         // rotate towards target
-        // Vector3 direction = target_pos - transform.position;
-        // transform.rotation = Quaternion.LookRotation(direction);
+        Vector3 direction = target_pos - transform.position;
+        transform.rotation = Quaternion.LookRotation(direction);
 
         // move towards target smoothly from current to velocity
-        currVelocity = Mathf.Lerp(currVelocity, target_velocity, 0.1f);
+        currVelocity = Mathf.Lerp(currVelocity, target_velocity, 0.01f);
         transform.position = Vector3.MoveTowards(transform.position, target_pos, currVelocity * Time.deltaTime);
     }
 

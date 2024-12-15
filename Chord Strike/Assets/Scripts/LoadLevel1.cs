@@ -33,4 +33,10 @@ public class LoadLevel : MonoBehaviour
 
         SceneManager.LoadScene("Level2");
     }
+
+    public void LoadLevel3()
+    {
+
+        SceneManager.LoadScene("Level3");
+    }
 }

@@ -24,22 +24,22 @@ public class MainMenu : MonoBehaviour
         if (id == 1)
         {
             Debug.Log("Button 1 clicked");
-            SceneManager.LoadScene("Scenes/Level 1");
+            SceneManager.LoadScene("Scenes/Level1");
         }
         if (id == 2)
         {
             Debug.Log("Button 2 clicked");
-            SceneManager.LoadScene("Scenes/Level 2");
+            SceneManager.LoadScene("Scenes/Level2");
         }
         if (id == 3)
         {
             Debug.Log("Button 3 clicked");
-            SceneManager.LoadScene("Scenes/Level 3");
+            SceneManager.LoadScene("Scenes/Level3");
         }
-        if (id == 4) 
+        if (id == 4)
         {
             Debug.Log("Tutorial clicked");
-            SceneManager.LoadScene("Scenes/Level 0");
+            SceneManager.LoadScene("Scenes/Level0");
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement; 
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class GameCompletionLevel1 : MonoBehaviour
 {
@@ -39,6 +39,6 @@ public class GameCompletionLevel1 : MonoBehaviour
     void GoToMainMenu()
     {
         // Load the Main Menu scene
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("MainMenu");
     }
 }

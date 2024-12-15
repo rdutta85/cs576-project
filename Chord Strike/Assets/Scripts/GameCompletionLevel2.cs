@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement; 
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameCompletionLevel2 : MonoBehaviour
@@ -40,21 +40,21 @@ public class GameCompletionLevel2 : MonoBehaviour
             Debug.LogError("rePlayingLevel is not assigned!");
         }
 
-    void GoToLevel2()
-    {
-        // Load the Level2 scene
-        SceneManager.LoadScene("Level 3");
-    }
+        void GoToLevel2()
+        {
+            // Load the Level2 scene
+            SceneManager.LoadScene("Level3");
+        }
 
-    void GoToMainMenu()
-    {
-        // Load the Main Menu scene
-        SceneManager.LoadScene("SampleScene");
+        void GoToMainMenu()
+        {
+            // Load the Main Menu scene
+            SceneManager.LoadScene("MainMenu");
+        }
+        void rePlay()
+        {
+            // Load the Level2 scene
+            SceneManager.LoadScene("Level1");
+        }
     }
-    void rePlay()
-    {
-        // Load the Level2 scene
-        SceneManager.LoadScene("Level1");
-    }
-}
 }

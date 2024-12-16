@@ -28,7 +28,10 @@ public class EnemySpawner : MonoBehaviour
     private Bounds terrainBounds;          // bounds of the terrain
     public int spawnCounter = 0;
 
-    private Vector3 RandomEnemyPos(int counter = 0)
+private Vector3 RandomEnemyPos()
+{
+    int counter = 0;
+    while (counter <= 10000)
     {
         float spawnX = Random.Range(-spawnRadius, spawnRadius);
         float spawnZ = Mathf.Sqrt(spawnRadius * spawnRadius - spawnX * spawnX) * Mathf.Sign(Random.Range(-1.0f, 1.0f));
@@ -39,30 +42,25 @@ public class EnemySpawner : MonoBehaviour
 
         Vector3 pos = new Vector3(spawnX, spawnY, spawnZ);
 
-        // confirm if the spawn position is inside the navmesh surface
+        // Confirm if the spawn position is inside the navmesh surface
         NavMeshHit hit;
         if (NavMesh.SamplePosition(pos, out hit, spawnRadius, NavMesh.AllAreas))
         {
             pos = hit.position;
             pos.y = spawnY;
-        }
-        else
-        {
-            counter++;
-            if (counter > 10000) return pos;
-            else return RandomEnemyPos(counter);
+
+            // Confirm if the spawn position is within the terrain bounds
+            if (terrainBounds.Contains(pos))
+                return pos;
         }
 
-        // confirm if the spawn position is within the terrain bounds
-        if (terrainBounds.Contains(pos)) return pos;
-        else
-        {
-            counter++;
-            if (counter > 10000) return pos;
-            else return RandomEnemyPos(counter);
-        }
-
+        counter++;
     }
+
+    // Fallback if no valid position found
+    return new Vector3(0, junko.transform.position.y + spawnHeight, 0); // Default position or handle error
+}
+
 
     private Quaternion EnemyOrientation(Vector3 spawnPos)
     {

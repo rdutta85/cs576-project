@@ -27,7 +27,7 @@ public class EnemySpawner : MonoBehaviour
     private float spawnHeight = 10.0f;     // height of the enemy above the ground (released from the sky)
     private Bounds terrainBounds;          // bounds of the terrain
     public int spawnCounter = 0;
-    private NavMeshData navMeshData;
+    // private NavMeshData navMeshData;
 
 
     private Vector3 RandomEnemyPos(int counter = 0)
@@ -83,6 +83,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemies(int count)
     {
+        int invalidSpawn = 0;
         for (int i = 0; i < count; i++)
         {
             // randomly select an enemy type
@@ -90,6 +91,16 @@ public class EnemySpawner : MonoBehaviour
             GameObject currentEnemy = enemyPrefabs[rndIdx];
 
             Vector3 spawnPos = RandomEnemyPos();
+
+            if (!isValidSpawnPos(spawnPos))
+            {
+                i--;
+                invalidSpawn++;
+                if (invalidSpawn > 10000) break;
+
+                continue;
+            }
+
             Quaternion spawnRot = EnemyOrientation(spawnPos);
 
             GameObject enemy = Instantiate(currentEnemy, spawnPos, spawnRot);
@@ -97,6 +108,34 @@ public class EnemySpawner : MonoBehaviour
             enemy.gameObject.tag = enemyTag;
 
             spawnCounter++;
+        }
+    }
+
+    private bool isValidSpawnPos(Vector3 spawnPos)
+    {
+        // check if the spawn position is already occupied by another enemy
+        // assume a cube of size 2.0f x 2.0f x 2.0f as the enemy size
+
+        Vector3 enemySize = new Vector3(2.0f, 2.0f, 2.0f);
+        Collider[] hitColliders = Physics.OverlapBox(spawnPos, enemySize / 2.0f);
+        if (hitColliders.Length > 0)
+        {
+            foreach (Collider hit in hitColliders)
+            {
+                if (hit.gameObject.tag == enemyTag)
+                {
+                    break;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else
+        {
+            return true;
         }
     }
 

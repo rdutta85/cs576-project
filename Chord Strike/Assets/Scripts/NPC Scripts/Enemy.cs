@@ -137,9 +137,6 @@ public class Enemy : MonoBehaviour
         junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
 
         agent = gameObject.GetComponent<NavMeshAgent>();
-
-        string chordStr = chord.ToString();
-        chordText.text = chordStr[0].ToString().ToUpper() + chordStr.Substring(1).ToLower();
     }
 
     // Update is called once per frame
@@ -293,7 +290,11 @@ public class Enemy : MonoBehaviour
         //randomly generate chord
         System.Array values = System.Enum.GetValues(typeof(Chord));
         Chord randomChord = (Chord)values.GetValue(Random.Range(0, values.Length));
-        return randomChord; //.ToString().ToUpperInvariant();
+
+        string chordStr = randomChord.ToString();
+        chordText.text = chordStr[0].ToString().ToUpper() + chordStr.Substring(1).ToLower();
+
+        return randomChord;
 
     }
 

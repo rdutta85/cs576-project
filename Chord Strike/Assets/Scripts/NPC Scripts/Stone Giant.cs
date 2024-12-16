@@ -16,8 +16,8 @@ public class StoneGiant : Enemy
         character_controller = GetComponent<CharacterController>();
         attackRange = 6f;
         attackSpeed = 10f;
-        tgtMoveVelocity = 3.5f;
-        rndMoveVelocity = 3.5f;
+        tgtMoveVelocity = 2.5f;
+        rndMoveVelocity = 1.5f;
         currVelocity = 0.0f;
         maxHealth = 1000f;
         health = maxHealth;

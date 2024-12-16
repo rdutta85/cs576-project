@@ -94,7 +94,8 @@ public class Enemy : MonoBehaviour
         gameObject.AddComponent<NavMeshAgent>();
         // gameObject.AddComponent<NavMeshObstacle>();
 
-        gameObject.AddComponent<BoxCollider>();
+        // gameObject.AddComponent<BoxCollider>();
+        gameObject.AddComponent<Rigidbody>();
     }
 
     // Start is called before the first frame update
@@ -184,10 +185,8 @@ public class Enemy : MonoBehaviour
 
         agent.SetDestination(junko.transform.position);
 
-        Debug.DrawRay(transform.position, move_direction * 10, Color.red);
-        Debug.DrawRay(transform.position, transform.forward * 10, Color.green);
-        Debug.Log(agent.pathStatus + "path status");
-        Debug.Log(agent.isPathStale + "path stale");
+        Debug.Log("path status" + agent.pathStatus);
+        Debug.Log("path stale" + agent.isPathStale);
 
     }
     protected virtual void Attack()
@@ -237,6 +236,7 @@ public class Enemy : MonoBehaviour
     {
         //use ChordsToNotes to determine if the player chord matches
         //the enemy chord
+        player_chord = player_chord.ToUpper();
         if (chordToNotes[(Chord)System.Enum.Parse(typeof(Chord), chord)].Contains((Note)System.Enum.Parse(typeof(Note), player_chord)))
         {
             Debug.Log("Succesful enemy attack with " + player_chord + " on " + chord);
@@ -260,7 +260,7 @@ public class Enemy : MonoBehaviour
         //randomly generate chord
         System.Array values = System.Enum.GetValues(typeof(Chord));
         Chord randomChord = (Chord)values.GetValue(Random.Range(0, values.Length));
-        return randomChord.ToString();
+        return randomChord.ToString().ToUpper();
 
     }
 

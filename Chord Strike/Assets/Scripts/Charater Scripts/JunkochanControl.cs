@@ -24,9 +24,9 @@ public class JunkochanControl : MonoBehaviour
 	private Vector3 MoveDirection;
 	private float Height;//Current height of Junkochan (y value of transform.position)
 	public ParticleSystem ParticleSystem;
-	public float Health = 100;
+	public float Health = 1000;
 	public float VertSpeed = 0;
-	public float AttackRange = 2.0f;
+	public float AttackRange = 7.0f;
 	public float[] AttackDamage = { 25f, 33f };
 	private string CurrentScene;
 

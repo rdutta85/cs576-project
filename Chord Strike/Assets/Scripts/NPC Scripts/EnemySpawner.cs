@@ -117,21 +117,19 @@ public class EnemySpawner : MonoBehaviour
         // assume a cube of size 2.0f x 2.0f x 2.0f as the enemy size
 
         Vector3 enemySize = new Vector3(2.0f, 2.0f, 2.0f);
-        Collider[] hitColliders = Physics.OverlapBox(spawnPos, enemySize / 2.0f);
+        Collider[] hitColliders = Physics.OverlapBox(spawnPos, enemySize);
         if (hitColliders.Length > 0)
         {
+            bool problem = false;
             foreach (Collider hit in hitColliders)
             {
-                if (hit.gameObject.tag == enemyTag)
+                if (hit.gameObject.tag == enemyTag || hit.gameObject.layer == 8)
                 {
+                    problem = true;
                     break;
                 }
-                else
-                {
-                    return true;
-                }
             }
-            return false;
+            return !problem;
         }
         else
         {

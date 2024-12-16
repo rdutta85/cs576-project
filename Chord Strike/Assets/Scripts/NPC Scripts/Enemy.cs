@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 // All equivalents have been squashed
 enum Chord
@@ -52,6 +53,7 @@ public class Enemy : MonoBehaviour
     protected int MistakeCounter;//tracks the number of times the player plays the wrong chord
     private HealthBar healthBar;
     protected bool isDead;
+    private NavMeshAgent agent;
 
     // Dictionary mapping chords to notes
     private Dictionary<Chord, List<Note>> chordToNotes = new Dictionary<Chord, List<Note>>
@@ -87,11 +89,20 @@ public class Enemy : MonoBehaviour
     void Awake()
     {
         healthBar = GetComponentInChildren<HealthBar>();
+
+        // add NAVMESH AGENT and NAVMESH OBSTACLE
+        gameObject.AddComponent<NavMeshAgent>();
+        // gameObject.AddComponent<NavMeshObstacle>();
+
+        // gameObject.AddComponent<BoxCollider>();
+        gameObject.AddComponent<Rigidbody>();
     }
 
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
+        gameObject.layer = 7; // Enemy layer
+
         //assign a random chord to the enemy
         chord = GenerateChord();
 
@@ -99,19 +110,22 @@ public class Enemy : MonoBehaviour
         currVelocity = 0.0f;
         last_attack = 0f;
         junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
+
+        agent = gameObject.GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
     protected void Update()
     {
         if (isDead) return;
-        // float verticalVelocity = 0f;
-        // if (character_controller.isGrounded)
-        //     verticalVelocity = -0.1f;
-        // else
-        //     verticalVelocity -= 9.81f * Time.deltaTime;
-        // Vector3 moveDirection = new Vector3(0, verticalVelocity, 0);
-        // character_controller.Move(moveDirection * Time.deltaTime);
+
+        if (!character_controller.isGrounded)
+        {
+            float verticalVelocity = 9.81f * Time.deltaTime;
+            Vector3 moveDirection = new Vector3(0, verticalVelocity, 0);
+            character_controller.Move(moveDirection * Time.deltaTime);
+            return;
+        }
 
         Move();
         Attack();
@@ -122,9 +136,9 @@ public class Enemy : MonoBehaviour
         //npc moves towards player globally
         RaycastHit hit;
         Vector3 move_direction;
-        float move_velocity;
+        // float move_velocity;
         float dist = Vector3.Distance(transform.position, junko.transform.position);
-        if (dist > attackRange / 2f)
+        if (dist > attackRange / 1.2f)
         {//stay meters away from player
             if (Physics.Raycast(transform.position, junko.transform.position - transform.position, out hit, Mathf.Infinity))
             {
@@ -133,14 +147,16 @@ public class Enemy : MonoBehaviour
                     Debug.Log("Player in line of sight");
                     animation_controller.SetBool("isWalking", false);
                     animation_controller.SetBool("isRunning", true);
-                    move_velocity = tgtMoveVelocity;
+                    // move_velocity = tgtMoveVelocity;
+                    agent.speed = tgtMoveVelocity;
                 }
                 else
                 {
                     // Debug.Log("Player is NOT in line of sight");
                     animation_controller.SetBool("isWalking", true);
                     animation_controller.SetBool("isRunning", false);
-                    move_velocity = rndMoveVelocity;
+                    // move_velocity = rndMoveVelocity;
+                    agent.speed = rndMoveVelocity;
                 }
             }
             else
@@ -148,13 +164,15 @@ public class Enemy : MonoBehaviour
                 // Debug.Log("Player is NOT in line of sight");
                 animation_controller.SetBool("isWalking", true);
                 animation_controller.SetBool("isRunning", false);
-                move_velocity = rndMoveVelocity;
+                // move_velocity = rndMoveVelocity;
+                agent.speed = rndMoveVelocity;
             }
             //rotate model towards move direction
         }
         else
         {
-            move_velocity = 0f;
+            // move_velocity = 0f;
+            agent.speed = 0f;
             animation_controller.SetBool("isWalking", false);
             animation_controller.SetBool("isRunning", false);
         }
@@ -165,7 +183,11 @@ public class Enemy : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(move_direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
 
-        character_controller.Move(move_direction * move_velocity * Time.deltaTime);
+        agent.SetDestination(junko.transform.position);
+
+        Debug.Log("path status" + agent.pathStatus);
+        Debug.Log("path stale" + agent.isPathStale);
+
     }
     protected virtual void Attack()
     {
@@ -200,17 +222,6 @@ public class Enemy : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, target_pos, currVelocity * Time.deltaTime);
     }
 
-    /*
-    This method should correctly map each chord to a list of notes using the algorithm in Guitar.cs
-
-    This method should be used to check received signals and determine whether or not an attack should damage the enemy
-     */
-    private List<Note> ChordToNotes()//TODO match player chords to enemy chord
-    {
-        // Delete this.
-        return null;
-    }
-
     private void TakeDamage(float dmg)
     {
         health -= dmg;
@@ -225,13 +236,16 @@ public class Enemy : MonoBehaviour
     {
         //use ChordsToNotes to determine if the player chord matches
         //the enemy chord
+        player_chord = player_chord.ToUpper();
         if (chordToNotes[(Chord)System.Enum.Parse(typeof(Chord), chord)].Contains((Note)System.Enum.Parse(typeof(Note), player_chord)))
         {
+            Debug.Log("Succesful enemy attack with " + player_chord + " on " + chord);
             if (health > 0) TakeDamage(dmg);
             chord = GenerateChord();  //change the note of the enemy after being attacked
         }
         else
         {
+            Debug.Log("Bas enemy attack with " + player_chord + " on " + chord);
             MistakeCounter++;
             if (MistakeCounter == 3)
             {//if the player plays the wrong chord 3 times, the enemy is enraged
@@ -246,7 +260,7 @@ public class Enemy : MonoBehaviour
         //randomly generate chord
         System.Array values = System.Enum.GetValues(typeof(Chord));
         Chord randomChord = (Chord)values.GetValue(Random.Range(0, values.Length));
-        return randomChord.ToString();
+        return randomChord.ToString().ToUpper();
 
     }
 

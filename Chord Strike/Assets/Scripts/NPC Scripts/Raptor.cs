@@ -7,17 +7,18 @@ public class Raptor : Enemy
     // Start is called before the first frame update
     void Start()
     {
-        junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
-        animation_controller = GetComponent<Animator>();
-        character_controller = GetComponent<CharacterController>();
-        attackRange = 1.1f;
+        base.Start();
+
+        animation_controller = gameObject.GetComponent<Animator>();
+        character_controller = gameObject.GetComponent<CharacterController>();
+        attackRange = 5.0f;
         attackSpeed = 1f;
-        tgtMoveVelocity = 1.0f;
+        tgtMoveVelocity = 0.1f;
         rndMoveVelocity = 0.5f;
         currVelocity = 0.0f;
         maxHealth = 100f;
         health = maxHealth;
-        AttackDamage = new float[] { 10f, 15f };
+        AttackDamage = new float[] { 5f, 10f };
         chord = GenerateChord();
     }
 

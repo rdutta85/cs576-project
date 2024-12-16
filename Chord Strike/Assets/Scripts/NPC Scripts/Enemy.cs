@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour
     protected int MistakeCounter;//tracks the number of times the player plays the wrong chord
     private HealthBar healthBar;
     protected bool isDead;
-    private NavMeshAgent agent;
+    protected NavMeshAgent agent;
 
     // Dictionary mapping chords to notes
     public Dictionary<Chord, List<Note>> chordToNotes = new Dictionary<Chord, List<Note>>
@@ -93,17 +93,19 @@ public class Enemy : MonoBehaviour
         healthBar = GetComponentInChildren<HealthBar>();
 
         // add NAVMESH AGENT and NAVMESH OBSTACLE
-        gameObject.AddComponent<NavMeshAgent>();
+        
         // gameObject.AddComponent<NavMeshObstacle>();
 
         // gameObject.AddComponent<BoxCollider>();
-        gameObject.AddComponent<Rigidbody>();
+        
     }
 
     // Start is called before the first frame update
     protected void Start()
     {
         gameObject.layer = 7; // Enemy layer
+        gameObject.AddComponent<NavMeshAgent>();
+        gameObject.AddComponent<Rigidbody>();
 
         //assign a random chord to the enemy
         chord = GenerateChord();

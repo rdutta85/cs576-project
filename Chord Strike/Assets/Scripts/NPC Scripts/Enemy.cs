@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 
 
@@ -36,7 +37,7 @@ public class Enemy : MonoBehaviour
     protected CharacterController character_controller;
     protected int MistakeCounter;//tracks the number of times the player plays the wrong chord
     private HealthBar healthBar;
-    protected bool isDead;
+    public bool isDead;
     private NavMeshAgent agent;
 
     // Dictionary mapping chords to notes
@@ -56,16 +57,16 @@ public class Enemy : MonoBehaviour
         { Chord.Fm, new List<Note> { Note.F, Note.Af, Note.C } },
         { Chord.G, new List<Note> { Note.G, Note.B, Note.D } },
         { Chord.Gm, new List<Note> { Note.G, Note.Bf, Note.D } },
-        { Chord.Cs, new List<Note> { Note.Cs, Note.E, Note.Gs } },
-        { Chord.Csm, new List<Note> { Note.Cs, Note.E, Note.G } },
+        { Chord.Cs, new List<Note> { Note.Cs, Note.Es, Note.Gs } },
+        { Chord.Csm, new List<Note> { Note.Cs, Note.E, Note.Gs } },
         { Chord.Af, new List<Note> { Note.Af, Note.C, Note.Ef } },
-        { Chord.Afm, new List<Note> { Note.Af, Note.B, Note.Ef } },
+        { Chord.Afm, new List<Note> { Note.Af, Note.Cf, Note.Ef } },
         { Chord.Bf, new List<Note> { Note.Bf, Note.D, Note.F } },
-        { Chord.Bfm, new List<Note> { Note.Bf, Note.D, Note.Fs } },
+        { Chord.Bfm, new List<Note> { Note.Bf, Note.Df, Note.F } },
         { Chord.Ef, new List<Note> { Note.Ef, Note.G, Note.Bf } },
-        { Chord.Efm, new List<Note> { Note.Ef, Note.G, Note.B } },
-        { Chord.Fs, new List<Note> { Note.Fs, Note.A, Note.Cs } },
-        { Chord.Fsm, new List<Note> { Note.Fs, Note.A, Note.C } },
+        { Chord.Efm, new List<Note> { Note.Ef, Note.Gf, Note.Bf } },
+        { Chord.Fs, new List<Note> { Note.Fs, Note.As, Note.Cs } },
+        { Chord.Fsm, new List<Note> { Note.Fs, Note.A, Note.Cs } },
     };
 
     // All equivalents have been squashed
@@ -97,7 +98,12 @@ public class Enemy : MonoBehaviour
         // gameObject.AddComponent<NavMeshObstacle>();
 
         // gameObject.AddComponent<BoxCollider>();
-        gameObject.AddComponent<Rigidbody>();
+
+        if (gameObject.GetComponent<Rigidbody>() == null)
+            gameObject.AddComponent<Rigidbody>();
+
+        if (gameObject.GetComponent<MeshCollider>() == null)
+            gameObject.AddComponent<MeshCollider>();
     }
 
     // Start is called before the first frame update
@@ -146,7 +152,7 @@ public class Enemy : MonoBehaviour
             {
                 if (hit.collider.gameObject == junko.gameObject)//sprint if player is in l.o.s
                 {
-                    Debug.Log("Player in line of sight");
+                    // Debug.Log("Player in line of sight");
                     animation_controller.SetBool("isWalking", false);
                     animation_controller.SetBool("isRunning", true);
                     // move_velocity = tgtMoveVelocity;
@@ -246,11 +252,13 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("Succesful enemy attack with " + player_chord + " on " + chord);
             if (health > 0) TakeDamage(dmg);
-            chord = GenerateChord();  //change the note of the enemy after being attacked
+
+            if (SceneManager.GetActiveScene().name != "Level1")
+                chord = GenerateChord();  //change the note of the enemy after being attacked
         }
         else
         {
-            Debug.Log("Bas enemy attack with " + player_chord + " on " + chord);
+            Debug.Log("Bad enemy attack with " + player_chord + " on " + chord);
             MistakeCounter++;
             if (MistakeCounter == 3)
             {//if the player plays the wrong chord 3 times, the enemy is enraged

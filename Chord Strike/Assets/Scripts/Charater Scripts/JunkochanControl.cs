@@ -24,9 +24,9 @@ public class JunkochanControl : MonoBehaviour
 	private Vector3 MoveDirection;
 	private float Height;//Current height of Junkochan (y value of transform.position)
 	public ParticleSystem ParticleSystem;
-	public float Health = 100;
+	public float Health;
 	public float VertSpeed = 0;
-	public float AttackRange = 1.5f;
+	public float AttackRange;
 	public float[] AttackDamage = { 25f, 33f };
 	private string CurrentScene;
 	private Vector3 movement_direction;
@@ -35,6 +35,9 @@ public class JunkochanControl : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
+		AttackRange = 5.0f;
+		Health = 100;
+
 		JKCCam = GameObject.Find("Main Camera");
 		JKCController = this.GetComponent<CharacterController>();
 		JKCAnim = this.GetComponent<Animator>();
@@ -84,7 +87,7 @@ public class JunkochanControl : MonoBehaviour
 			JKCAnim.SetBool("Run", true);
 
 			if (Input.GetKey(KeyCode.LeftShift))
-            {
+			{
 				if (t < 2f)
 				{
 					t += 0.01f;
@@ -92,7 +95,7 @@ public class JunkochanControl : MonoBehaviour
 				JKCController.Move(movement_direction * 2.5f * t * Time.deltaTime);
 			}
 			else
-            {
+			{
 				if (t < 2f)
 				{
 					t += 0.001f;
@@ -122,7 +125,7 @@ public class JunkochanControl : MonoBehaviour
 			}
 		}
 		else
-        {
+		{
 			// Reset animations and speeding up
 			t = 1;
 			JKCAnim.SetBool("Move", false);

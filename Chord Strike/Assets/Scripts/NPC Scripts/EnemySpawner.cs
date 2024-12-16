@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class EnemySpawner : MonoBehaviour
     public GameObject[] enemyPrefabs;         // prefab for the raptor enemy
     // public GameObject rhinoPrefab;         // prefab for the rhino enemy
 
-    private string enemyTag = "Enemy";     // tag for the enemies
+    public string enemyTag = "Enemy";     // tag for the enemies
     private int numEnemies = 3;            // number of enemies expected in the scene 
     private float spawnRadius = 20.0f;     // radius of the circle in which the enemies are spawned
     private float spawnHeight = 10.0f;     // height of the enemy above the ground (released from the sky)
@@ -110,7 +111,14 @@ public class EnemySpawner : MonoBehaviour
     {
         junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
 
-        terrainBounds = GameObject.Find("Terrain").GetComponent<TerrainCollider>().bounds;
+        if (SceneManager.GetActiveScene().name == "Level2")
+        {
+            terrainBounds = GameObject.Find("TerrainMesh").GetComponent<TerrainCollider>().bounds;
+        }
+        else
+        {
+            terrainBounds = GameObject.Find("Terrain").GetComponent<TerrainCollider>().bounds;
+        }
 
         // navMeshData = GameObject.Find("Terrain").GetComponent<NavMeshSurface>().navMeshData;
     }
@@ -118,7 +126,7 @@ public class EnemySpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (startSpawning)
+        if (startSpawning && SceneManager.GetActiveScene().name != "Level3")
         {
             StartCoroutine("SpawnEnemy");
         }

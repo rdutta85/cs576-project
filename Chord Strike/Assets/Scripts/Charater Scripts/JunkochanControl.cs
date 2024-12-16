@@ -26,7 +26,7 @@ public class JunkochanControl : MonoBehaviour
 	public ParticleSystem ParticleSystem;
 	public float Health = 100;
 	public float VertSpeed = 0;
-	public float AttackRange = 1.5f;
+	public float AttackRange = 2.0f;
 	public float[] AttackDamage = { 25f, 33f };
 	private string CurrentScene;
 

@@ -27,6 +27,8 @@ public class EnemySpawner : MonoBehaviour
     private float spawnHeight = 10.0f;     // height of the enemy above the ground (released from the sky)
     private Bounds terrainBounds;          // bounds of the terrain
     public int spawnCounter = 0;
+    private NavMeshData navMeshData;
+
 
     private Vector3 RandomEnemyPos(int counter = 0)
     {
@@ -38,30 +40,22 @@ public class EnemySpawner : MonoBehaviour
         spawnZ += junko.transform.position.z;
 
         Vector3 pos = new Vector3(spawnX, spawnY, spawnZ);
+        // Vector3 pos;
 
         // confirm if the spawn position is inside the navmesh surface
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(pos, out hit, spawnRadius, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(pos, out hit, 2 * spawnRadius, NavMesh.AllAreas))
         {
             pos = hit.position;
-            pos.y = spawnY;
+            // pos.y = spawnY;
+            return pos;
         }
         else
         {
             counter++;
-            if (counter > 10000) return pos;
+            if (counter > 10000) return new Vector3(0, spawnHeight, 0);
             else return RandomEnemyPos(counter);
         }
-
-        // confirm if the spawn position is within the terrain bounds
-        if (terrainBounds.Contains(pos)) return pos;
-        else
-        {
-            counter++;
-            if (counter > 10000) return pos;
-            else return RandomEnemyPos(counter);
-        }
-
     }
 
     private Quaternion EnemyOrientation(Vector3 spawnPos)

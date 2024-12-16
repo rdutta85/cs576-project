@@ -25,7 +25,7 @@ public class EnemySpawner : MonoBehaviour
     private float spawnRadius = 20.0f;     // radius of the circle in which the enemies are spawned
     private float spawnHeight = 10.0f;     // height of the enemy above the ground (released from the sky)
     private Bounds terrainBounds;          // bounds of the terrain
-    private int spawnCounter = 0;
+    public int spawnCounter = 0;
 
     private Vector3 RandomEnemyPos(int counter = 0)
     {

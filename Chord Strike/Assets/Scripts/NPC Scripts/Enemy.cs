@@ -3,22 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-// All equivalents have been squashed
-enum Chord
-{
-    A, B, C, D, E, F, G, Am, Bm, Cm, Dm, Em, Fm, Gm,
-    Af, Bf, Ef, Afm, Bfm, Efm,
-    Cs, Fs, Csm, Fsm
-};
-
-
-// These are all possible note names. 
-enum Note
-{
-    A, B, C, D, E, F, G,
-    Af, Bf, Cf, Df, Ef, Ff, Gf,
-    As, Bs, Cs, Ds, Es, Fs, Gs
-}
 
 
 
@@ -37,7 +21,7 @@ public class Enemy : MonoBehaviour
      Create basic enemy spawning and pathfinding in Update().
      */
 
-    public string chord;
+    public Chord chord;
     protected JunkochanControl junko;
     protected float attackRange;//range of attack
     protected float attackSpeed;//attack cooldown
@@ -56,7 +40,7 @@ public class Enemy : MonoBehaviour
     private NavMeshAgent agent;
 
     // Dictionary mapping chords to notes
-    private Dictionary<Chord, List<Note>> chordToNotes = new Dictionary<Chord, List<Note>>
+    public Dictionary<Chord, List<Note>> chordToNotes = new Dictionary<Chord, List<Note>>
     {
         { Chord.A, new List<Note> { Note.A, Note.Cs, Note.E } },
         { Chord.Am, new List<Note> { Note.A, Note.C, Note.E } },
@@ -83,6 +67,24 @@ public class Enemy : MonoBehaviour
         { Chord.Fs, new List<Note> { Note.Fs, Note.A, Note.Cs } },
         { Chord.Fsm, new List<Note> { Note.Fs, Note.A, Note.C } },
     };
+
+    // All equivalents have been squashed
+    public enum Chord
+    {
+        A, B, C, D, E, F, G, Am, Bm, Cm, Dm, Em, Fm, Gm,
+        Af, Bf, Ef, Afm, Bfm, Efm,
+        Cs, Fs, Csm, Fsm
+    };
+
+
+    // These are all possible note names. 
+    public enum Note
+    {
+        A, B, C, D, E, F, G,
+        Af, Bf, Cf, Df, Ef, Ff, Gf,
+        As, Bs, Cs, Ds, Es, Fs, Gs
+    }
+
 
     // TODO: get map data from level
 
@@ -236,8 +238,11 @@ public class Enemy : MonoBehaviour
     {
         //use ChordsToNotes to determine if the player chord matches
         //the enemy chord
-        player_chord = player_chord.ToUpper();
-        if (chordToNotes[(Chord)System.Enum.Parse(typeof(Chord), chord)].Contains((Note)System.Enum.Parse(typeof(Note), player_chord)))
+        string firstLetter = player_chord[0].ToString().ToUpper();
+        string rest = player_chord.Substring(1);
+        player_chord = firstLetter + rest;
+
+        if (chordToNotes[chord].Contains((Note)System.Enum.Parse(typeof(Note), player_chord)))
         {
             Debug.Log("Succesful enemy attack with " + player_chord + " on " + chord);
             if (health > 0) TakeDamage(dmg);
@@ -255,12 +260,12 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    protected string GenerateChord()
+    protected Chord GenerateChord()
     {
         //randomly generate chord
         System.Array values = System.Enum.GetValues(typeof(Chord));
         Chord randomChord = (Chord)values.GetValue(Random.Range(0, values.Length));
-        return randomChord.ToString().ToUpper();
+        return randomChord; //.ToString().ToUpperInvariant();
 
     }
 

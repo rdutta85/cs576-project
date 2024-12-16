@@ -11,9 +11,9 @@ public class Portal : MonoBehaviour
 
     [Header("Activate Portal")]
     public bool activated = false;
-    private EnemySpawner enemySpawner; // Reference to the Enemy Spawner script
+    protected EnemySpawner enemySpawner; // Reference to the Enemy Spawner script
 
-    private ParticleSystem ps;
+    protected ParticleSystem ps;
 
     protected void Start()
     {

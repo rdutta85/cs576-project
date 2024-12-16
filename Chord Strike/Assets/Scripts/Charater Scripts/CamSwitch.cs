@@ -7,7 +7,7 @@ public class CamSwitch : MonoBehaviour
     // Script should be attached to Main Camera
     private int cam;
 
-    public GameObject obj;
+    private GameObject obj;
 
     private GameObject player; // Junkochan
 
@@ -24,7 +24,7 @@ public class CamSwitch : MonoBehaviour
 
         obj = GameObject.Find("Main Camera");
 
-        offset = player.transform.position - transform.position;
+        offset = player.transform.position - obj.transform.position;
     }
 
     // Update is called once per frame
@@ -38,14 +38,14 @@ public class CamSwitch : MonoBehaviour
         if (cam == 0)
         {
             // Unlock to player
-            transform.position = player.transform.position - offset;
-            transform.LookAt(player.transform.position);
+            obj.transform.position = player.transform.position - offset;
+            obj.transform.LookAt(player.transform.position);
         }
         else
         {
             // Lock on boss
-            transform.position = player.transform.position - offset;
-            transform.LookAt(boss.transform.position);
+            obj.transform.position = player.transform.position - offset;
+            obj.transform.LookAt(boss.transform.position);
         }
     }
 
@@ -71,7 +71,7 @@ public class CamSwitch : MonoBehaviour
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
             // Change the range of view to be wider
-            offset += new Vector3 (1f, 1f, 1f);
+            offset += new Vector3(1f, 1f, 1f);
         }
 
         // Scrolling downwards

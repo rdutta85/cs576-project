@@ -1,4 +1,4 @@
-﻿using OpenCover.Framework.Model;
+using OpenCover.Framework.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,11 +24,13 @@ public class JunkochanControl : MonoBehaviour
 	private Vector3 MoveDirection;
 	private float Height;//Current height of Junkochan (y value of transform.position)
 	public ParticleSystem ParticleSystem;
-	public float Health = 1000;
+	public float Health = 100;
 	public float VertSpeed = 0;
-	public float AttackRange = 7.0f;
+	public float AttackRange = 1.5f;
 	public float[] AttackDamage = { 25f, 33f };
 	private string CurrentScene;
+	private Vector3 movement_direction;
+	public float t;
 
 	// Use this for initialization
 	void Start()
@@ -41,6 +43,7 @@ public class JunkochanControl : MonoBehaviour
 		JKCAnim.SetBool("Fall", false);
 
 		CurrentScene = SceneManager.GetActiveScene().name;
+		t = 1;
 	}
 
 	// Update is called once per frame
@@ -67,55 +70,87 @@ public class JunkochanControl : MonoBehaviour
 		}
 		#endregion
 
+		float ang = Mathf.Deg2Rad * transform.rotation.eulerAngles.y;
 
-		#region MOVEMENT
-		move_velocity = MoveSpeed;
-		InputH = Input.GetAxis("Horizontal");//Get keyboard input
-		InputV = Input.GetAxis("Vertical");//Get keyboard input
-		Vector3 CamForward = Vector3.Scale(JKCCam.transform.forward, new Vector3(1, 0, 1)).normalized;//Camera's forward direction
-		MoveDirection = CamForward * InputV + JKCCam.transform.right * InputH;//Get Junkochan's forward direction seen from camera
+		// Update Forward/Back Movement Direction
+		float xdirection = Mathf.Sin(ang);
+		float zdirection = Mathf.Cos(ang);
+		movement_direction = new Vector3(xdirection, 0.0f, zdirection);
 
-		if (MoveDirection.magnitude > 0)
-		{//When any WASD key is pushed
-			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(MoveDirection), 0.01f);//Rotate Junkochan to Inputting direction
+		// Left shift speeds up character and effects rate at which Junko speeds up
+		if (Input.GetKey(KeyCode.W))
+		{
+			JKCAnim.SetBool("Move", true);
+			JKCAnim.SetBool("Run", true);
+
+			if (Input.GetKey(KeyCode.LeftShift))
+            {
+				if (t < 2f)
+				{
+					t += 0.01f;
+				}
+				JKCController.Move(movement_direction * 2.5f * t * Time.deltaTime);
+			}
+			else
+            {
+				if (t < 2f)
+				{
+					t += 0.001f;
+				}
+				JKCController.Move(movement_direction * 1.5f * t * Time.deltaTime);
+			}
 		}
-
-		if (MoveDirection.magnitude > 0)
-		{//When any WASD key is pushed
-			JKCAnim.SetBool("Move", true);//Set Junkochan's "Move" parameter in Animator component
+		else if (Input.GetKey(KeyCode.S))
+		{
+			JKCAnim.SetBool("Move", true);
+			JKCAnim.SetBool("Walk", true);
+			if (Input.GetKey(KeyCode.LeftShift))
+			{
+				if (t < 2f)
+				{
+					t += 0.01f;
+				}
+				JKCController.Move(movement_direction * -2f * t * Time.deltaTime);
+			}
+			else
+			{
+				if (t < 2f)
+				{
+					t += 0.001f;
+				}
+				JKCController.Move(movement_direction * -1f * t * Time.deltaTime);
+			}
 		}
 		else
-		{
+        {
+			// Reset animations and speeding up
+			t = 1;
 			JKCAnim.SetBool("Move", false);
-		}
-
-		if (Input.GetKey(KeyCode.LeftShift))
-		{//When shift key is pushed
-			move_velocity *= 2f;//Set Junkochan's moving speed as Running speed
-			JKCAnim.SetBool("Run", true);//Set Junkochan's "Run" parameter in Animator component
-		}
-		else
-		{
 			JKCAnim.SetBool("Run", false);
+			JKCAnim.SetBool("Grounded", false);
 		}
-		if (Input.GetKey(KeyCode.LeftControl))
-		{//When Control key is pushed
-			MoveDirection *= 0.4f;//Set Junkochan's moving speed as crouching walk speed
-			JKCAnim.SetBool("Crouch", true);//Set Junkochan's "Crouch" parameter in Animator component
-		}
-		else
+
+		/* Change Direction towards left direction
+		Can be used with forwards */
+		if (Input.GetKey(KeyCode.A))
 		{
-			JKCAnim.SetBool("Crouch", false);
+			JKCAnim.SetBool("Move", true);
+			transform.Rotate(0f, -100f * Time.deltaTime, 0f);
 		}
 
-		Height = transform.position.y;//Memory current Junkochan's height
+		/* Change Direction towards right direction
+		Can be used with forwards */
+		else if (Input.GetKey(KeyCode.D))
+		{
+			JKCAnim.SetBool("Move", true);
+			transform.Rotate(0f, 100f * Time.deltaTime, 0f);
+		}
 
-		//JunckoChan Movement
-		// if (!CheckGrounded()) VertSpeed -= 0.2f;//Increase falling speed (worked as gravity acceleration)
-		JKCController.Move(MoveDirection * move_velocity * Time.deltaTime);//Horizontal movement
-		JKCController.Move(Vector3.up * VertSpeed * Time.deltaTime);//Vertical movement
 
-		#endregion
+		if (!JKCController.isGrounded)
+		{
+			JKCController.Move(new Vector3(0f, -1f, 0f) * 9.81f * Time.deltaTime);
+		}
 	}
 
 	bool CheckGrounded()

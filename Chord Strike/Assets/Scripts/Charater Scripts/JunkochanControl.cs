@@ -35,7 +35,7 @@ public class JunkochanControl : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		AttackRange = 5.0f;
+		AttackRange = 8.0f;
 		Health = 100;
 
 		JKCCam = GameObject.Find("Main Camera");

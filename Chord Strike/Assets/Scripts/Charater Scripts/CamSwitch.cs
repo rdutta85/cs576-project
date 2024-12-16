@@ -14,6 +14,7 @@ public class CamSwitch : MonoBehaviour
     private GameObject boss;
 
     private Vector3 offset;
+    private bool switched = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +35,7 @@ public class CamSwitch : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C)) // Key C to switch between cams
         {
             HandleSwitch();
+            switched = true;
         }
         if (cam == 0)
         {
@@ -47,6 +49,8 @@ public class CamSwitch : MonoBehaviour
             obj.transform.position = player.transform.position - offset;
             obj.transform.LookAt(boss.transform.position);
         }
+
+        switched = false;
     }
 
     // Function used to switch between the cam to focus on player vs cam to focus on boss

@@ -8,7 +8,8 @@ public class Mole : Enemy
     private Animator[] animators;
     void Start()
     {
-        junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
+        base.Start();
+
         animators = GetComponentsInChildren<Animator>();
         character_controller = GetComponent<CharacterController>();
         attackRange = 1.5f;
@@ -16,10 +17,9 @@ public class Mole : Enemy
         tgtMoveVelocity = 1f;
         rndMoveVelocity = 0.5f;
         currVelocity = 0.0f;
-        maxHealth = 150f;
+        maxHealth = 100f;
         health = maxHealth;
         AttackDamage = new float[] { 15f, 24f };
-        chord = GenerateChord();
     }
 
     // Update is called once per frame

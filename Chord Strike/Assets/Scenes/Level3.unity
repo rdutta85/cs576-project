@@ -751,7 +751,6 @@ MonoBehaviour:
   red: {fileID: 2100000, guid: 68813994ef6c0f5488aa54bce62f98a4, type: 2}
   green: {fileID: 2100000, guid: f94a4bce943f1ba4cb052341bea42d46, type: 2}
   obj: {fileID: 452538827}
-  temp: 0
 --- !u!65 &452538829
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1088,15 +1087,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4697453817444104, guid: e209b9e719437e145951c42cb3c16ae4, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4697453817444104, guid: e209b9e719437e145951c42cb3c16ae4, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4697453817444104, guid: e209b9e719437e145951c42cb3c16ae4, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4697453817444104, guid: e209b9e719437e145951c42cb3c16ae4, type: 3}
       propertyPath: m_LocalPosition.x

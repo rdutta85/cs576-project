@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 
@@ -36,7 +39,8 @@ public class Enemy : MonoBehaviour
     protected Animator animation_controller;
     protected CharacterController character_controller;
     protected int MistakeCounter;//tracks the number of times the player plays the wrong chord
-    private HealthBar healthBar;
+    private HealthBar healthBar;    // health bar for the enemy
+    private TextMeshProUGUI chordText;
     public bool isDead;
     private NavMeshAgent agent;
 
@@ -109,6 +113,19 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     protected void Start()
     {
+        TextMeshProUGUI[] textUIs = GetComponentsInChildren<TextMeshProUGUI>();
+        foreach (TextMeshProUGUI textUI in textUIs)
+        {
+            if (textUI.name == "ChordText")
+            {
+                chordText = textUI;
+                Debug.Log("ChordText found");
+                break;
+            }
+
+            Debug.Log("ChordText not found");
+        }
+
         gameObject.layer = 7; // Enemy layer
 
         //assign a random chord to the enemy
@@ -120,6 +137,9 @@ public class Enemy : MonoBehaviour
         junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
 
         agent = gameObject.GetComponent<NavMeshAgent>();
+
+        string chordStr = chord.ToString();
+        chordText.text = chordStr[0].ToString().ToUpper() + chordStr.Substring(1).ToLower();
     }
 
     // Update is called once per frame

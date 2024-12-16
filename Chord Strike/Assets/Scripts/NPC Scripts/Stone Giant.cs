@@ -10,7 +10,8 @@ public class StoneGiant : Enemy
     private bool isAttacking;
     void Start()
     {
-        junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
+        base.Start();
+
         animation_controller = GetComponent<Animator>();
         character_controller = GetComponent<CharacterController>();
         attackRange = 6f;
@@ -22,7 +23,6 @@ public class StoneGiant : Enemy
         health = maxHealth;
         isAttacking = false;
         AttackDamage = new float[] { 50f, 55f };
-        chord = GenerateChord();
     }
 
     // Update is called once per frame

@@ -11,6 +11,7 @@ public class playerhealth : MonoBehaviour
     void Start()
     {
         junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
+        healthSlider.maxValue = junko.MaxHealth;
     }
 
     // Update is called once per frame

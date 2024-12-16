@@ -25,6 +25,7 @@ public class JunkochanControl : MonoBehaviour
 	private float Height;//Current height of Junkochan (y value of transform.position)
 	public ParticleSystem ParticleSystem;
 	public float Health;
+	public float MaxHealth;
 	public float VertSpeed = 0;
 	public float AttackRange;
 	public float[] AttackDamage = { 25f, 33f };
@@ -35,8 +36,18 @@ public class JunkochanControl : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		AttackRange = 8.0f;
-		Health = 100;
+		if (SceneManager.GetActiveScene().name == "Level3")
+		{
+			AttackRange = 12.0f;
+			MaxHealth = 300;
+		}
+		else
+		{
+			AttackRange = 8.0f;
+			MaxHealth = 150;
+		}
+
+		Health = MaxHealth;
 
 		JKCCam = GameObject.Find("Main Camera");
 		JKCController = this.GetComponent<CharacterController>();

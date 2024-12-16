@@ -8,7 +8,7 @@ public class Goal3 : MonoBehaviour
 {
     public Material red;
     public Material green;
-    public GameObject obj;    
+    public GameObject obj;
     private GameObject player;
     private int temp;
     private float time;
@@ -27,10 +27,10 @@ public class Goal3 : MonoBehaviour
     // After healing, the pad turns red for 10 seconds and the player can not heal
     void Update()
     {
-        if (temp == 1) 
+        if (temp == 1)
         {
             time -= Time.deltaTime;
-            if (time < 0) 
+            if (time < 0)
             {
                 obj.GetComponent<MeshRenderer>().material = green;
                 temp = 0;
@@ -41,7 +41,7 @@ public class Goal3 : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "JunkoChan" && temp == 0 && player.GetComponent<JunkochanControl>().Health < 100)
+        if (other.gameObject.name == "JunkoChan" && temp == 0 && player.GetComponent<JunkochanControl>().Health < player.GetComponent<JunkochanControl>().MaxHealth)
         {
             player.GetComponent<JunkochanControl>().Health += 20;
             obj.GetComponent<MeshRenderer>().material = red;

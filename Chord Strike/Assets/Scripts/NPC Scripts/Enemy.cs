@@ -149,7 +149,7 @@ public class Enemy : MonoBehaviour
 
         if (!character_controller.isGrounded)
         {
-            float verticalVelocity = 9.81f * Time.deltaTime;
+            float verticalVelocity = 100f * Time.deltaTime;
             Vector3 moveDirection = new Vector3(0, verticalVelocity, 0);
             character_controller.Move(moveDirection * Time.deltaTime);
             return;

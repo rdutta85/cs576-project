@@ -50,7 +50,7 @@ private Vector3 RandomEnemyPos()
             pos.y = spawnY;
 
             // Confirm if the spawn position is within the terrain bounds
-            if (terrainBounds.Contains(pos))
+            // if (terrainBounds.Contains(pos))
                 return pos;
         }
 

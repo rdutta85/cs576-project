@@ -85,7 +85,6 @@ public class StoneGiant : Enemy
             {
                 animation_controller.SetTrigger("Jump Attack");
             }
-            junko.TakeDamage(Random.Range(AttackDamage[0], AttackDamage[1]));
             last_attack = Time.time;
             isAttacking = true;
             StartCoroutine("Attacking");
@@ -101,6 +100,11 @@ public class StoneGiant : Enemy
         }
     }
 
+    void AttackIfNearPlayer(){
+        if (Vector3.Distance(transform.position, junko.transform.position) < attackRange){
+            junko.TakeDamage(Random.Range(AttackDamage[0], AttackDamage[1]));
+        }
+    }
     void CreateRock()
     {
         GameObject start_pos = FindChildByName(gameObject, "Empty");

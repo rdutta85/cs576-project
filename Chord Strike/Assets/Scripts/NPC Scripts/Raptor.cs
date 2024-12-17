@@ -12,19 +12,18 @@ public class Raptor : Enemy
         animation_controller = gameObject.GetComponent<Animator>();
         character_controller = gameObject.GetComponent<CharacterController>();
         attackRange = 5.0f;
-        attackSpeed = 1f;
+        attackSpeed = 4f;
         tgtMoveVelocity = 0.1f;
         rndMoveVelocity = 0.5f;
         currVelocity = 0.0f;
         maxHealth = 100f;
         health = maxHealth;
         AttackDamage = new float[] { 5f, 10f };
-        chord = GenerateChord();
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        base.Update();
-    }
+    // void Update()
+    // {
+    //     base.Update();
+    // }
 }

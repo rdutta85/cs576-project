@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.AI.Navigation;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -10,7 +11,7 @@ using UnityEngine.UI;
 
 
 
-public class Enemy : MonoBehaviour
+public class Enemy : ChordKnowledge
 {
     /*
      Tasks for Tele:
@@ -25,7 +26,7 @@ public class Enemy : MonoBehaviour
      Create basic enemy spawning and pathfinding in Update().
      */
 
-    public Chord chord;
+    public Note note;
     protected JunkochanControl junko;
     protected float attackRange;//range of attack
     protected float attackSpeed;//attack cooldown
@@ -40,55 +41,10 @@ public class Enemy : MonoBehaviour
     protected CharacterController character_controller;
     protected int MistakeCounter;//tracks the number of times the player plays the wrong chord
     private HealthBar healthBar;    // health bar for the enemy
-    private TextMeshProUGUI chordText;
+    private TextMeshProUGUI noteText;
     public bool isDead;
-    private NavMeshAgent agent;
-
-    // Dictionary mapping chords to notes
-    public Dictionary<Chord, List<Note>> chordToNotes = new Dictionary<Chord, List<Note>>
-    {
-        { Chord.A, new List<Note> { Note.A, Note.Cs, Note.E } },
-        { Chord.Am, new List<Note> { Note.A, Note.C, Note.E } },
-        { Chord.B, new List<Note> { Note.B, Note.Ds, Note.Fs } },
-        { Chord.Bm, new List<Note> { Note.B, Note.D, Note.Fs } },
-        { Chord.C, new List<Note> { Note.C, Note.E, Note.G } },
-        { Chord.Cm, new List<Note> { Note.C, Note.Ef, Note.G } },
-        { Chord.D, new List<Note> { Note.D, Note.Fs, Note.A } },
-        { Chord.Dm, new List<Note> { Note.D, Note.F, Note.A } },
-        { Chord.E, new List<Note> { Note.E, Note.Gs, Note.B } },
-        { Chord.Em, new List<Note> { Note.E, Note.G, Note.B } },
-        { Chord.F, new List<Note> { Note.F, Note.A, Note.C } },
-        { Chord.Fm, new List<Note> { Note.F, Note.Af, Note.C } },
-        { Chord.G, new List<Note> { Note.G, Note.B, Note.D } },
-        { Chord.Gm, new List<Note> { Note.G, Note.Bf, Note.D } },
-        { Chord.Cs, new List<Note> { Note.Cs, Note.Es, Note.Gs } },
-        { Chord.Csm, new List<Note> { Note.Cs, Note.E, Note.Gs } },
-        { Chord.Af, new List<Note> { Note.Af, Note.C, Note.Ef } },
-        { Chord.Afm, new List<Note> { Note.Af, Note.Cf, Note.Ef } },
-        { Chord.Bf, new List<Note> { Note.Bf, Note.D, Note.F } },
-        { Chord.Bfm, new List<Note> { Note.Bf, Note.Df, Note.F } },
-        { Chord.Ef, new List<Note> { Note.Ef, Note.G, Note.Bf } },
-        { Chord.Efm, new List<Note> { Note.Ef, Note.Gf, Note.Bf } },
-        { Chord.Fs, new List<Note> { Note.Fs, Note.As, Note.Cs } },
-        { Chord.Fsm, new List<Note> { Note.Fs, Note.A, Note.Cs } },
-    };
-
-    // All equivalents have been squashed
-    public enum Chord
-    {
-        A, B, C, D, E, F, G, Am, Bm, Cm, Dm, Em, Fm, Gm,
-        Af, Bf, Ef, Afm, Bfm, Efm,
-        Cs, Fs, Csm, Fsm
-    };
-
-
-    // These are all possible note names. 
-    public enum Note
-    {
-        A, B, C, D, E, F, G,
-        Af, Bf, Cf, Df, Ef, Ff, Gf,
-        As, Bs, Cs, Ds, Es, Fs, Gs
-    }
+    protected NavMeshAgent agent;
+    protected NavMeshSurface surface;
 
 
     // TODO: get map data from level
@@ -97,28 +53,34 @@ public class Enemy : MonoBehaviour
     {
         healthBar = GetComponentInChildren<HealthBar>();
 
+
+
         // add NAVMESH AGENT and NAVMESH OBSTACLE
-        gameObject.AddComponent<NavMeshAgent>();
+        // gameObject.AddComponent<NavMeshAgent>();
         // gameObject.AddComponent<NavMeshObstacle>();
 
         // gameObject.AddComponent<BoxCollider>();
 
-        if (gameObject.GetComponent<Rigidbody>() == null)
-            gameObject.AddComponent<Rigidbody>();
+        // if (gameObject.GetComponent<Rigidbody>() == null)
+        //     gameObject.AddComponent<Rigidbody>();
 
-        if (gameObject.GetComponent<MeshCollider>() == null)
-            gameObject.AddComponent<MeshCollider>();
+        // if (gameObject.GetComponent<MeshCollider>() == null)
+        //     gameObject.AddComponent<MeshCollider>();
     }
 
     // Start is called before the first frame update
     protected void Start()
     {
+        gameObject.AddComponent<NavMeshAgent>();
+        gameObject.AddComponent<MeshCollider>();
+        gameObject.AddComponent<Rigidbody>();
+
         TextMeshProUGUI[] textUIs = GetComponentsInChildren<TextMeshProUGUI>();
         foreach (TextMeshProUGUI textUI in textUIs)
         {
             if (textUI.name == "ChordText")
             {
-                chordText = textUI;
+                noteText = textUI;
                 Debug.Log("ChordText found");
                 break;
             }
@@ -129,7 +91,7 @@ public class Enemy : MonoBehaviour
         gameObject.layer = 7; // Enemy layer
 
         //assign a random chord to the enemy
-        chord = GenerateChord();
+        note = GenerateNote();
 
         isDead = false;
         currVelocity = 0.0f;
@@ -137,31 +99,37 @@ public class Enemy : MonoBehaviour
         junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
 
         agent = gameObject.GetComponent<NavMeshAgent>();
+        agent.agentTypeID = 1;
+        // surface = GameObject.Find("NavMeshLevel1").GetComponent<NavMeshSurface>();
+        // surface.BuildNavMesh();
     }
 
     // Update is called once per frame
-    protected void Update()
+    protected virtual void Update()
     {
         if (isDead) return;
 
         if (!character_controller.isGrounded)
         {
-            float verticalVelocity = 9.81f * Time.deltaTime;
+            float verticalVelocity = -9.81f * Time.deltaTime;
             Vector3 moveDirection = new Vector3(0, verticalVelocity, 0);
             character_controller.Move(moveDirection * Time.deltaTime);
-            return;
+            // return;
         }
 
-        Move();
+
+        int move = Move();
+        AnimateMove(move);
         Attack();
     }
 
-    protected virtual void Move()
+    protected virtual int Move()
     {
         //npc moves towards player globally
+        int move;
         RaycastHit hit;
         Vector3 move_direction;
-        // float move_velocity;
+        float move_velocity;
         float dist = Vector3.Distance(transform.position, junko.transform.position);
         if (dist > attackRange / 1.2f)
         {//stay meters away from player
@@ -170,36 +138,32 @@ public class Enemy : MonoBehaviour
                 if (hit.collider.gameObject == junko.gameObject)//sprint if player is in l.o.s
                 {
                     // Debug.Log("Player in line of sight");
-                    animation_controller.SetBool("isWalking", false);
-                    animation_controller.SetBool("isRunning", true);
-                    // move_velocity = tgtMoveVelocity;
-                    agent.speed = tgtMoveVelocity;
+                    move_velocity = tgtMoveVelocity;
+                    move = 2;
+                    // agent.speed = tgtMoveVelocity;
                 }
                 else
                 {
                     // Debug.Log("Player is NOT in line of sight");
-                    animation_controller.SetBool("isWalking", true);
-                    animation_controller.SetBool("isRunning", false);
-                    // move_velocity = rndMoveVelocity;
-                    agent.speed = rndMoveVelocity;
+                    move_velocity = rndMoveVelocity;
+                    move = 1;
+                    // agent.speed = rndMoveVelocity;
                 }
             }
             else
             {
                 // Debug.Log("Player is NOT in line of sight");
-                animation_controller.SetBool("isWalking", true);
-                animation_controller.SetBool("isRunning", false);
-                // move_velocity = rndMoveVelocity;
-                agent.speed = rndMoveVelocity;
+                move_velocity = rndMoveVelocity;
+                move = 1;
+                // agent.speed = rndMoveVelocity;
             }
             //rotate model towards move direction
         }
         else
         {
-            // move_velocity = 0f;
-            agent.speed = 0f;
-            animation_controller.SetBool("isWalking", false);
-            animation_controller.SetBool("isRunning", false);
+            move_velocity = 0f;
+            // agent.speed = 0f;
+            move = 0;
         }
         move_direction = junko.transform.position - transform.position;
         move_direction.Normalize();
@@ -208,11 +172,30 @@ public class Enemy : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(move_direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
 
-        agent.SetDestination(junko.transform.position);
+        // agent.SetDestination(junko.transform.position);
 
-        Debug.Log("path status" + agent.pathStatus);
-        Debug.Log("path stale" + agent.isPathStale);
+        character_controller.Move(move_direction * move_velocity * Time.deltaTime);
 
+        return move;
+    }
+
+    protected virtual void AnimateMove(int move)
+    {
+        if (move == 0)
+        {
+            animation_controller.SetBool("isWalking", false);
+            animation_controller.SetBool("isRunning", false);
+        }
+        else if (move == 1)
+        {
+            animation_controller.SetBool("isWalking", true);
+            animation_controller.SetBool("isRunning", false);
+        }
+        else if (move == 2)
+        {
+            animation_controller.SetBool("isWalking", false);
+            animation_controller.SetBool("isRunning", true);
+        }
     }
     protected virtual void Attack()
     {
@@ -258,24 +241,27 @@ public class Enemy : MonoBehaviour
     }
 
     public void Attacked(string player_chord, float dmg)
+    // TODO: fix this function
     {
         //use ChordsToNotes to determine if the player chord matches
-        //the enemy chord
+        //the enemy note
         string firstLetter = player_chord[0].ToString().ToUpper();
         string rest = player_chord.Substring(1);
         player_chord = firstLetter + rest;
 
-        if (chordToNotes[chord].Contains((Note)System.Enum.Parse(typeof(Note), player_chord)))
+        List<Note> player_notes = chordToNotes[(Chord)System.Enum.Parse(typeof(Chord), player_chord)];
+
+        if (player_notes.Contains(note))
         {
-            Debug.Log("Succesful enemy attack with " + player_chord + " on " + chord);
+            Debug.Log("Succesful enemy attack with " + player_chord + " on " + note);
             if (health > 0) TakeDamage(dmg);
 
             if (SceneManager.GetActiveScene().name != "Level1")
-                chord = GenerateChord();  //change the note of the enemy after being attacked
+                note = GenerateNote();  //change the note of the enemy after being attacked
         }
         else
         {
-            Debug.Log("Bad enemy attack with " + player_chord + " on " + chord);
+            Debug.Log("Bad enemy attack with " + player_chord + " on " + note);
             MistakeCounter++;
             if (MistakeCounter == 3)
             {//if the player plays the wrong chord 3 times, the enemy is enraged
@@ -285,16 +271,16 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    protected Chord GenerateChord()
+    protected Note GenerateNote()
     {
         //randomly generate chord
-        System.Array values = System.Enum.GetValues(typeof(Chord));
-        Chord randomChord = (Chord)values.GetValue(Random.Range(0, values.Length));
+        System.Array values = System.Enum.GetValues(typeof(Note));
+        Note randomNote = (Note)values.GetValue(Random.Range(0, values.Length));
 
-        string chordStr = randomChord.ToString();
-        chordText.text = chordStr[0].ToString().ToUpper() + chordStr.Substring(1).ToLower();
+        string noteStr = randomNote.ToString();
+        noteText.text = noteStr[0].ToString().ToUpper() + noteStr.Substring(1).ToLower();
 
-        return randomChord;
+        return randomNote;
 
     }
 

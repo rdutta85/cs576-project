@@ -17,8 +17,8 @@ public class Pachycephalasaurus : Enemy
         currVelocity = 0.0f;
         maxHealth = 150f;
         health = maxHealth;
-        AttackDamage = new float[]{15f,22f};
-        chord = GenerateChord();
+        AttackDamage = new float[] { 15f, 22f };
+        note = GenerateNote();
     }
 
     // Update is called once per frame

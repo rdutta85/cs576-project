@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,11 +14,15 @@ public class Portal : MonoBehaviour
     public bool activated = false;
     protected EnemySpawner enemySpawner; // Reference to the Enemy Spawner script
 
+    private TextMeshProUGUI portalActiveText; // Reference to the Portal Active Text
+
     protected ParticleSystem ps;
 
     protected void Start()
     {
         ps = GetComponentInChildren<ParticleSystem>();
+
+        portalActiveText = GameObject.Find("PortalActiveText").GetComponent<TextMeshProUGUI>();
 
         // Get Enemy Spawner script from the Terrain object
         enemySpawner = GameObject.Find("Terrain").GetComponent<EnemySpawner>();
@@ -43,10 +48,22 @@ public class Portal : MonoBehaviour
                 var main = ps.main;
                 main.startColor = Color.blue;
 
+                // change the text to "Portal Activated!"
+                portalActiveText.text = "Portal is Activated!";
+                StartCoroutine(BlinkActivePortalText());
 
                 Debug.Log("Portal activated!");
+                break;
             }
-            yield return new WaitForSeconds(1f);
+        }
+    }
+
+    IEnumerator BlinkActivePortalText()
+    {
+        while (true)
+        {
+            portalActiveText.enabled = !portalActiveText.enabled;
+            yield return new WaitForSeconds(0.5f);
         }
     }
 

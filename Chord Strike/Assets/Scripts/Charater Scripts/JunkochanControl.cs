@@ -94,7 +94,7 @@ public class JunkochanControl : MonoBehaviour
 		// Left shift speeds up character and effects rate at which Junko speeds up
 		if (Input.GetKey(KeyCode.W))
 		{
-			JKCAnim.SetBool("Move", true);
+			// JKCAnim.SetBool("Move", true);
 			JKCAnim.SetBool("Run", true);
 
 			if (Input.GetKey(KeyCode.LeftShift))
@@ -117,7 +117,7 @@ public class JunkochanControl : MonoBehaviour
 		else if (Input.GetKey(KeyCode.S))
 		{
 			JKCAnim.SetBool("Move", true);
-			JKCAnim.SetBool("Walk", true);
+			// JKCAnim.SetBool("Walk", true);
 			if (Input.GetKey(KeyCode.LeftShift))
 			{
 				if (t < 2f)

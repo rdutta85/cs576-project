@@ -6,23 +6,25 @@ public class Zombie : Enemy
 {
 
     // Start is called before the first frame update
-    void Start(){
-        junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
+    void Start()
+    {
+        base.Start();
+
         animation_controller = GetComponent<Animator>();
         character_controller = GetComponent<CharacterController>();
-        attackRange = 1.1f;
-        attackSpeed = 1f;
+        attackRange = 2f;
+        attackSpeed = 2f;
         tgtMoveVelocity = 0.5f;
         rndMoveVelocity = 0.25f;
         currVelocity = 0.0f;
         maxHealth = 100f;
         health = maxHealth;
-        AttackDamage = new float[]{10f,20f};
-        chord = GenerateChord();
+        AttackDamage = new float[] { 10f, 20f };
     }
 
     // Update is called once per frame
-    void Update(){
-        base.Update();
-    }
+    //     void Update()
+    //     {
+    //         base.Update();
+    //     }
 }

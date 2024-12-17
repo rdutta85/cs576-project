@@ -118,9 +118,10 @@ public class EnemySpawner : MonoBehaviour
 
         Vector3 enemySize = new Vector3(2.0f, 2.0f, 2.0f);
         Collider[] hitColliders = Physics.OverlapBox(spawnPos, enemySize);
+        bool problem = false;
+
         if (hitColliders.Length > 0)
         {
-            bool problem = false;
             foreach (Collider hit in hitColliders)
             {
                 if (hit.gameObject.tag == enemyTag || hit.gameObject.layer == 8)
@@ -129,12 +130,33 @@ public class EnemySpawner : MonoBehaviour
                     break;
                 }
             }
-            return !problem;
+        }
+        if (problem) return false;
+
+        NavMeshPath path = new NavMeshPath();
+        if (!NavMesh.CalculatePath(spawnPos, junko.transform.position, NavMesh.AllAreas, path))
+        {
+            problem = true;
         }
         else
         {
-            return true;
+            if (path.status != NavMeshPathStatus.PathComplete)
+            {
+                problem = true;
+            }
         }
+        if (!problem)
+        {
+            // draw a sline from the spawn position to the player position denoting the path
+            // using path corners
+            Vector3[] corners = path.corners;
+            for (int i = 0; i < corners.Length - 1; i++)
+            {
+                Debug.DrawLine(corners[i], corners[i + 1], Color.red);
+            }
+        }
+
+        return !problem;
     }
 
     // Start is called before the first frame update

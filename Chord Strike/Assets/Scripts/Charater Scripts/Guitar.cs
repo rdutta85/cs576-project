@@ -174,8 +174,10 @@ public class Guitar : ChordKnowledge
     IEnumerator DisplayChordNotesRoutine(string noteStr)
     {
         chordnotestextUI.text = noteStr;
+        chordnotestextUI.color = Color.white;
         yield return new WaitForSeconds(1.5f);
         chordnotestextUI.text = "";
+        chordnotestextUI.color = Color.clear;
     }
 
     void CheckForNearbyEnemies()

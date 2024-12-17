@@ -30257,9 +30257,6 @@ MonoBehaviour:
   - {fileID: 2547632407910942000, guid: af9f138ca1214ae41beb955d1406704e, type: 3}
   - {fileID: 4907239047242697928, guid: 82430f94fd1381c43878fce981a5aa43, type: 3}
   - {fileID: 6899769094566875523, guid: f3978c44f7fb36246b698fdea7f77528, type: 3}
-  - {fileID: 7162877999985610890, guid: d617ba1fd30aa664b9e8b69ee2ef7a7c, type: 3}
-  - {fileID: 6300610643294207175, guid: ddf65a445cb940a40a98c8bac0e8cb8c, type: 3}
-  - {fileID: 2318095952616823901, guid: c906313341dd2ec4f882f1b11c4f20fd, type: 3}
   enemyTag: Enemy
   spawnCounter: 0
 --- !u!1001 &1447422692

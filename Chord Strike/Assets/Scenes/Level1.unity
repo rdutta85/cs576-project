@@ -4182,8 +4182,6 @@ MonoBehaviour:
   - {fileID: 4907239047242697928, guid: 82430f94fd1381c43878fce981a5aa43, type: 3}
   - {fileID: 2547632407910942000, guid: af9f138ca1214ae41beb955d1406704e, type: 3}
   - {fileID: 6334826068141619221, guid: 5bba62d8b65dae44898012275d24ba9e, type: 3}
-  - {fileID: 3477903515640148249, guid: 4a77ad79e8a41e04180000ab3335a9da, type: 3}
-  - {fileID: 7162877999985610890, guid: d617ba1fd30aa664b9e8b69ee2ef7a7c, type: 3}
   - {fileID: 4414871117303439921, guid: aef9a3e063e740f4d8100584de73ceb4, type: 3}
   enemyTag: Enemy
   spawnCounter: 0

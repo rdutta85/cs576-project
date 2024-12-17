@@ -22,20 +22,6 @@ public class Mole : Enemy
         AttackDamage = new float[] { 15f, 24f };
     }
 
-    // Update is called once per frame
-    // void Update()
-    // {
-    //     float verticalVelocity = 0f;
-    //     if (character_controller.isGrounded)
-    //         verticalVelocity = -0.1f;
-    //     else
-    //         verticalVelocity -= 9.81f * Time.deltaTime;
-    //     Vector3 moveDirection = new Vector3(0, verticalVelocity, 0);
-    //     character_controller.Move(moveDirection * Time.deltaTime);
-    //     Move();
-    //     Attack();
-    // }
-    //have to do a custom Move() because the model has two animators
     protected override void AnimateMove(int move)
     {
 

@@ -21,19 +21,6 @@ public class Minotaur : Enemy
         AttackDamage = new float[] { 20f, 28f };
     }
 
-    // Update is called once per frame
-    // void Update()
-    // {
-    //     float verticalVelocity = 0f;
-    //     if (character_controller.isGrounded)
-    //         verticalVelocity = -0.1f;
-    //     else
-    //         verticalVelocity -= 1000f * Time.deltaTime;
-    //     Vector3 moveDirection = new Vector3(0, verticalVelocity, 0);
-    //     character_controller.Move(moveDirection * Time.deltaTime);
-    //     Move();
-    //     Attack();
-    // }
 
     protected override void Attack()
     {

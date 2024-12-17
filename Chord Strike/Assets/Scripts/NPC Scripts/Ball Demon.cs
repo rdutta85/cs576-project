@@ -9,7 +9,8 @@ public class Demon : Enemy
     private GameObject projectile_template;
     void Start()
     {
-        junko = GameObject.Find("JunkoChan").GetComponent<JunkochanControl>();
+        base.Start();
+
         projectile_template = (GameObject)Resources.Load("Bullet/Prefab/Sphere", typeof(GameObject));
         Animator[] animators = GetComponentsInChildren<Animator>();
         animation_controller = animators[0];
@@ -22,26 +23,7 @@ public class Demon : Enemy
         maxHealth = 75f;
         health = maxHealth;
         AttackDamage = new float[] { 12f, 17f };
-        note = GenerateNote();
     }
-
-    // Update is called once per frame
-    // void Update()
-    // {
-    //     float verticalVelocity = 0f;
-    //     if (character_controller.isGrounded)
-    //         verticalVelocity = -0.1f;
-    //     else
-    //         verticalVelocity -= 1000f * Time.deltaTime;
-    //     Vector3 moveDirection = new Vector3(0, verticalVelocity, 0);
-    //     character_controller.Move(moveDirection * Time.deltaTime);
-    //     //for initial starter animation
-    //     if (!animation_controller.GetCurrentAnimatorStateInfo(0).IsName("Spawn"))
-    //     {
-    //         Move();
-    //         Attack();
-    //     }
-    // }
 
     protected override void AnimateMove(int move)
     {

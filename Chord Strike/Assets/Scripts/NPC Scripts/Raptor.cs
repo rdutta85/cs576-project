@@ -21,9 +21,4 @@ public class Raptor : Enemy
         AttackDamage = new float[] { 5f, 10f };
     }
 
-    // Update is called once per frame
-    // void Update()
-    // {
-    //     base.Update();
-    // }
 }

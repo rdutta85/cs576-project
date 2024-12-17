@@ -126,6 +126,7 @@ public class Enemy : ChordKnowledge
     protected virtual int Move()
     {
         //npc moves towards player globally
+
         int move;
         RaycastHit hit;
         Vector3 move_direction;
@@ -141,6 +142,18 @@ public class Enemy : ChordKnowledge
                     move_velocity = tgtMoveVelocity;
                     move = 2;
                     // agent.speed = tgtMoveVelocity;
+                    Vector3 future_junko_pos = junko.transform.position;
+                    float delta_pos = Mathf.Infinity;
+                    while (delta_pos > 0.01f)
+                    {
+                        float distance = Vector3.Distance(future_junko_pos, transform.position);
+                        float look_ahead_time = distance / move_velocity;
+                        Vector3 last_future_junko_pos = future_junko_pos;
+                        future_junko_pos = junko.transform.position + junko.GetVelocity() * junko.GetMoveDirection() * look_ahead_time;
+                        delta_pos = Vector3.Distance(last_future_junko_pos, future_junko_pos);
+                    }
+                    move_direction = future_junko_pos - transform.position;
+                    move_direction.Normalize();
                 }
                 else
                 {
@@ -148,6 +161,10 @@ public class Enemy : ChordKnowledge
                     move_velocity = rndMoveVelocity;
                     move = 1;
                     // agent.speed = rndMoveVelocity;
+
+                    // move direction is 90, 180 or 270 degrees from the player
+                    int angle = Random.Range(0, 3) * 90;
+                    move_direction = Quaternion.Euler(0, angle, 0) * (junko.transform.position - transform.position);
                 }
             }
             else
@@ -156,17 +173,19 @@ public class Enemy : ChordKnowledge
                 move_velocity = rndMoveVelocity;
                 move = 1;
                 // agent.speed = rndMoveVelocity;
+                // move direction is 90, 180 or 270 degrees from the player
+                int angle = Random.Range(0, 3) * 90;
+                move_direction = Quaternion.Euler(0, angle, 0) * (junko.transform.position - transform.position);
             }
-            //rotate model towards move direction
         }
         else
         {
             move_velocity = 0f;
             // agent.speed = 0f;
             move = 0;
+            move_direction = junko.transform.position - transform.position;
+
         }
-        move_direction = junko.transform.position - transform.position;
-        move_direction.Normalize();
 
         //rotate model towards move direction
         Quaternion targetRotation = Quaternion.LookRotation(move_direction);

@@ -22,9 +22,4 @@ public class Zombie : Enemy
         AttackDamage = new float[] { 10f, 20f };
     }
 
-    // Update is called once per frame
-    //     void Update()
-    //     {
-    //         base.Update();
-    //     }
 }
